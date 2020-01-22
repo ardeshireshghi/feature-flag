@@ -7,6 +7,7 @@
     "start": "babel-node -- lib/app.js",
     "watch": "nodemon --exec babel-node lib/app.js",
     "build": "babel lib -d dist",
+    "prettier-watch": "onchange 'lib/**/*.js' -- prettier --write {{changed}}",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -18,9 +19,12 @@
     "@babel/node": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
     "aws-sdk": "^2.605.0",
-    "dotenv": "^8.2.0"
+    "dotenv": "^8.2.0",
+    "ardi-cache": "git+ssh://git@github.com:ardeshireshghi/ardi-cache.git#master"
   },
   "devDependencies": {
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "onchange": "^6.1.0",
+    "prettier": "1.19.1"
   }
 }
