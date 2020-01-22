@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "babel-node -- lib/app.js",
-    "watch": "nodemon --exec babel-node lib/app.js",
+    "start": "bin/www/server.js",
+    "watch": "nodemon -w lib --exec 'npm run build && node' bin/www/server.js",
     "build": "babel lib -d dist",
     "prettier-watch": "onchange 'lib/**/*.js' -- prettier --write {{changed}}",
     "test": "echo \"Error: no test specified\" && exit 1"

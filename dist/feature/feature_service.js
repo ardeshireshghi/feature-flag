@@ -51,7 +51,7 @@ class FeatureService {
       await this._setCache(featuresData);
       return featuresData;
     } catch (err) {
-      const errorMessage = 'There was an error fetching features data from S3';
+      const errorMessage = `There was an error fetching features data from S3: ${err.message}`;
       console.error(errorMessage, err);
       throw new Error(errorMessage);
     }
