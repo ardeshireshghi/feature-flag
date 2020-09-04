@@ -52,14 +52,29 @@ const repository = {
     return true;
   },
 
-  async getAllFeatures() {
-    return (await featureService.fetch());
+  async getFeature({ name } = {}) {
+    const features = await featureService.fetch();
+
+    if (!name) {
+      return features;
+    }
+
+    if (!(name in features)) {
+      const error = new Error(`Cannot find non-existing Feature name \'${name}\'.`);
+      error.status = 422;
+      throw error;
+    }
+
+    return {
+      name,
+      enabled: features[name]
+    };
   }
 };
 
 export default {
   create: repository.createFeature,
   update: repository.updateFeature,
-  findAll: repository.getAllFeatures,
+  find: repository.getFeature,
   delete: repository.deleteFeature
 };

@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "bin/www/server.js",
-    "watch": "nodemon -w lib --exec 'npm run build && node' bin/www/server.js",
-    "build": "babel lib -d dist",
-    "prettier-watch": "onchange 'lib/**/*.js' -- prettier --write {{changed}}",
+    "watch": "nodemon -w api --exec 'npm run build && node' bin/www/server.js",
+    "build": "babel api -d dist/api",
+    "prettier-watch": "onchange 'api/**/*.js' -- prettier --write {{changed}}",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

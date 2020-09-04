@@ -4,9 +4,9 @@ import cacheManager from 'ardi-cache';
 
 const s3 = new S3();
 
-const { feature, envName } = config;
+const { feature } = config;
 
-const FEATURE_S3_KEY = `feature-service/${envName}-features.json`;
+const FEATURE_S3_KEY = `feature-flag-service/user_name_md5_hash/product_name_md5_hash/features.json`;
 
 const CACHE_KEY = 'features';
 const CACHE_TTL_MINS = feature.cacheTTLMins;
@@ -19,7 +19,7 @@ export default class FeatureService {
   }
 
   async fetch({ useCache = true } = {}) {
-    if (this._featureS3KeyChecked) {
+    if (!this._featureS3KeyChecked) {
       await this._createS3KeyIfNotExists();
     }
 
@@ -89,7 +89,9 @@ export default class FeatureService {
 
   async _createS3KeyIfNotExists() {
     try {
-      await s3.headObject(this._createS3CallParams()).promise();
+      const res = await s3.headObject(this._createS3CallParams()).promise();
+      console.log('HEAD REQUEST', res);
+
     } catch(err) {
       if (err && err.code === 'NotFound') {
         await this._persist({});

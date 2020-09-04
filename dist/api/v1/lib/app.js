@@ -5,76 +5,51 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _feature_repo = _interopRequireDefault(require("./feature/feature_repo"));
+var _config = _interopRequireDefault(require("./config"));
+
+var _routes = require("./routes");
+
+var _request_bodyparser = require("./parsers/request_bodyparser");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const featureController = {
-  post: _feature_repo.default.create,
-  put: _feature_repo.default.update,
-  delete: _feature_repo.default.delete
-};
-const featuresController = {
-  get: _feature_repo.default.findAll
-};
-const defaultController = {
-  get(_, res) {
-    res.end('Welcome to Feature toggle service');
-  }
-
-};
-const routeToController = {
-  feature: featureController,
-  features: featuresController,
-  default: defaultController
-};
-
-const parseReqBody = req => {
-  const data = [];
-  return new Promise((resolve, reject) => {
-    req.on('data', chunk => {
-      data.push(chunk);
-    });
-    req.on('end', () => {
-      resolve(JSON.parse(Buffer.concat(data)));
-    });
-    req.on('error', err => {
-      reject(err);
-    });
-  });
-};
+const {
+  apiRoutePattern
+} = _config.default;
 
 const responseError = (res, message, statusCode) => {
   res.statusCode = statusCode;
   res.end(message);
 };
 
+const shouldParseRequestBody = reqMethod => ['POST', 'PUT', 'DELETE'].includes(reqMethod);
+
 const featureFlagWebApp = async (req, res) => {
   let statusCode;
 
   try {
     let routeName = 'default';
-    const uriSegmentMatch = req.url.match(/\/([^\/]+)\/?/);
+    const uriSegmentMatch = req.url.match(apiRoutePattern);
 
     if (uriSegmentMatch !== null) {
       routeName = uriSegmentMatch[1];
     }
 
-    if (!(routeName in routeToController)) {
+    if (!(routeName in _routes.routeToController)) {
       statusCode = 404;
       throw new Error(`Can not handle URL ${req.url}`);
     }
 
-    const controller = routeToController[routeName];
+    const controller = _routes.routeToController[routeName];
 
     if (!(req.method.toLowerCase() in controller)) {
       statusCode = 404;
       throw new Error('Can not handle request as the handler for method does not exist');
     }
 
-    if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
+    if (shouldParseRequestBody(req.method)) {
       try {
-        req.body = await parseReqBody(req);
+        req.body = await (0, _request_bodyparser.parseReqBody)(req);
       } catch (err) {
         statusCode = 422;
         throw err;

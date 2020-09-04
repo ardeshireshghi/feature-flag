@@ -2,14 +2,14 @@
 
 const http  = require('http');
 const dotEnv = require('dotenv');
-const featuresFlagApp = require('../../dist/app').default;
+const featuresFlagApiApp = require('../../dist/api/v1/lib/app').default;
 
 dotEnv.config();
 
 const { APP_PORT } = process.env;
 
 http
-  .createServer(featuresFlagApp)
+  .createServer(featuresFlagApiApp)
   .listen(APP_PORT, () => {
     console.log(`Listening to port ${APP_PORT}`);
   });

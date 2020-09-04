@@ -1,55 +1,25 @@
-import featureRepository from './feature/feature_repo';
 
-const featureController = {
-  post: featureRepository.create,
-  put: featureRepository.update,
-  delete: featureRepository.delete
-};
+import config from './config';
 
-const featuresController = {
-  get: featureRepository.findAll
-};
+import { routeToController } from './routes';
+import { parseReqBody } from './parsers/request_bodyparser';
 
-const defaultController =  {
-  get(_, res) {
-    res.end('Welcome to Feature toggle service');
-  }
-};
-const routeToController = {
-  feature: featureController,
-  features: featuresController,
-  default: defaultController
-};
-
-const parseReqBody = req => {
-  const data = [];
-
-  return new Promise((resolve, reject) => {
-    req.on('data', chunk => {
-      data.push(chunk);
-    });
-
-    req.on('end', () => {
-      resolve(JSON.parse(Buffer.concat(data)));
-    });
-
-    req.on('error', err => {
-      reject(err);
-    });
-  });
-};
+const { apiRoutePattern } = config;
 
 const responseError = (res, message, statusCode) => {
   res.statusCode = statusCode;
   res.end(message);
 };
 
+const shouldParseRequestBody = (reqMethod) =>
+  ['POST', 'PUT', 'DELETE'].includes(reqMethod);
+
 const featureFlagWebApp = async (req, res) => {
   let statusCode;
 
   try {
     let routeName = 'default';
-    const uriSegmentMatch = req.url.match(/\/([^\/]+)\/?/)
+    const uriSegmentMatch = req.url.match(apiRoutePattern)
 
     if (uriSegmentMatch !== null) {
       routeName = uriSegmentMatch[1];
@@ -67,7 +37,7 @@ const featureFlagWebApp = async (req, res) => {
       throw new Error('Can not handle request as the handler for method does not exist');
     }
 
-    if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
+    if (shouldParseRequestBody(req.method)) {
       try {
         req.body = await parseReqBody(req);
       } catch (err) {
@@ -89,8 +59,7 @@ const featureFlagWebApp = async (req, res) => {
       statusCode = err.status;
       throw err;
     }
-
-  } catch(err) {
+  } catch (err) {
     statusCode = statusCode || 500;
     responseError(res, err.message, statusCode);
   }
