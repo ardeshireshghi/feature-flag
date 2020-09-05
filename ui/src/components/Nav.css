@@ -1,0 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+
+.nav__logo {
+  font-family: 'Playfair Display', serif;
+  font-size: calc(1rem + 2vmin);
+}
