@@ -3,4 +3,5 @@
 .nav__logo {
   font-family: 'Playfair Display', serif;
   font-size: calc(1rem + 2vmin);
+  color: white;
 }

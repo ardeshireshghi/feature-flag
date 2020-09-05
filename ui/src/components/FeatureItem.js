@@ -6,11 +6,11 @@ function FeatureItem({ name, enabled }) {
   return (
     <Card
       padding={majorScale(2)}
-      background="tint1"
+      background="white"
       marginTop={majorScale(2)}
       paddingBottom={majorScale(2)}
       border="default"
-      borderColor="#f1f1f1"
+      borderColor="#f0f0f0"
       display="flex"
     >
       <Text size={500}>{name}</Text>
