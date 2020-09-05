@@ -1,34 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import FeatureItem from './FeatureItem';
-
-const FEATURES_API_BASE_URL = process.env.REACT_APP_FEATURE_FLAG_SERVICE_BASE_URL;
+import { updateFeature } from '../services/features-service';
 
 function FeatureToggleSwitchContainer({ name, initialEnabledState, children }) {
   const [featureIsEnabled, setFeatureEnabled] = useState(initialEnabledState);
+  const didMountRef = useRef(false);
 
   useEffect(() => {
-    const updateFeature = async () => {
-      try {
-        const response = await fetch(`${FEATURES_API_BASE_URL}/api/v1/feature`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          credentials: 'same-origin',
-          body: JSON.stringify({
-            name,
-            enabled: featureIsEnabled
-          })
-        });
-        if (!response.ok) {
-          throw new Error(`Error updating feature name ${name}, response status: ${response.status}`);
-        }
-      } catch (err) {
-        console.error('Error updating feature', err);
-      }
-    };
+    if (didMountRef.current) {
+      const persistWithFeaturesApi = async () => {
+        await updateFeature({ name, enabled: featureIsEnabled });
+      };
 
-    updateFeature();
+      persistWithFeaturesApi();
+    } else {
+      didMountRef.current = true;
+    }
   }, [name, featureIsEnabled]);
 
   return <>{children(featureIsEnabled, setFeatureEnabled)}</>;
