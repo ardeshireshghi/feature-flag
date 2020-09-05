@@ -9,11 +9,15 @@ var _feature_controller = _interopRequireDefault(require("./controllers/feature_
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const defaultController = {
-  get(_, res) {
-    res.end('Hello! Feature toggle service');
-  }
+const defaultHandler = (_, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.end(JSON.stringify({
+    hello: 'Feature toggle service'
+  }));
+};
 
+const defaultController = {
+  get: defaultHandler
 };
 const routeToController = {
   feature: _feature_controller.default,

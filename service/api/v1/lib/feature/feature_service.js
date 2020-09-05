@@ -90,8 +90,6 @@ export default class FeatureService {
   async _createS3KeyIfNotExists() {
     try {
       const res = await s3.headObject(this._createS3CallParams()).promise();
-      console.log('HEAD REQUEST', res);
-
     } catch(err) {
       if (err && err.code === 'NotFound') {
         await this._persist({});
