@@ -1,7 +1,9 @@
+import url from 'url';
 import config from './config';
 
 import { routeToController } from './routes';
 import { parseReqBody } from './parsers/request_bodyparser';
+import { parseUrl } from './parsers/url_parser';
 
 const { apiRoutePattern } = config;
 
@@ -22,6 +24,7 @@ const shouldParseRequestBody = reqMethod => ['POST', 'PUT', 'DELETE'].includes(r
 const featureFlagWebApp = async (req, res) => {
   let statusCode;
 
+  parseUrl(req);
   addCORSHeaders(res);
 
   if (req.method === 'OPTIONS') {
@@ -31,7 +34,7 @@ const featureFlagWebApp = async (req, res) => {
 
   try {
     let routeName = 'default';
-    const uriSegmentMatch = req.url.match(apiRoutePattern);
+    const uriSegmentMatch = req.pathname.match(apiRoutePattern);
 
     if (uriSegmentMatch !== null) {
       routeName = uriSegmentMatch[1];
@@ -62,7 +65,9 @@ const featureFlagWebApp = async (req, res) => {
 
     try {
       const handler = controller[req.method.toLowerCase()];
-      const result = await handler(req.body);
+
+      console.log(req.query);
+      const result = await handler(req.method === 'GET' ? req.query : req.body);
 
       res.setHeader('Content-Type', 'application/json');
       res.statusCode = req.method === 'POST' ? 201 : 200;

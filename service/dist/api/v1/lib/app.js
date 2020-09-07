@@ -5,11 +5,15 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
+var _url = _interopRequireDefault(require("url"));
+
 var _config = _interopRequireDefault(require("./config"));
 
 var _routes = require("./routes");
 
 var _request_bodyparser = require("./parsers/request_bodyparser");
+
+var _url_parser = require("./parsers/url_parser");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35,6 +39,7 @@ const shouldParseRequestBody = reqMethod => ['POST', 'PUT', 'DELETE'].includes(r
 
 const featureFlagWebApp = async (req, res) => {
   let statusCode;
+  (0, _url_parser.parseUrl)(req);
   addCORSHeaders(res);
 
   if (req.method === 'OPTIONS') {
@@ -44,7 +49,7 @@ const featureFlagWebApp = async (req, res) => {
 
   try {
     let routeName = 'default';
-    const uriSegmentMatch = req.url.match(apiRoutePattern);
+    const uriSegmentMatch = req.pathname.match(apiRoutePattern);
 
     if (uriSegmentMatch !== null) {
       routeName = uriSegmentMatch[1];
@@ -75,7 +80,8 @@ const featureFlagWebApp = async (req, res) => {
 
     try {
       const handler = controller[req.method.toLowerCase()];
-      const result = await handler(req.body);
+      console.log(req.query);
+      const result = await handler(req.method === 'GET' ? req.query : req.body);
       res.setHeader('Content-Type', 'application/json');
       res.statusCode = req.method === 'POST' ? 201 : 200;
       res.end(JSON.stringify(result));

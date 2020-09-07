@@ -7,5 +7,5 @@ export default {
     cacheTTLMins: Number(process.env.FEATURE_CACHE_TTL_MINS) || 24 * 60,
     s3Bucket: process.env.FEATURE_S3_BUCKET
   },
-  apiRoutePattern: /\/api\/v1\/([^\/]+)\/?/
+  apiRoutePattern: /\/api\/v1\/([^\/]+)\??\/?/
 };
