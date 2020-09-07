@@ -9,6 +9,8 @@ var _feature_service = _interopRequireDefault(require("./feature_service"));
 
 var _config = _interopRequireDefault(require("../config"));
 
+var _feature_model = _interopRequireDefault(require("./feature_model"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const {
@@ -30,14 +32,16 @@ const repository = {
       throw error;
     }
 
+    const featureModel = new _feature_model.default(name, {
+      enabled,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    });
     featureService.save({
       name,
-      enabled
+      attributes: featureModel.valueOf()
     });
-    return {
-      name,
-      enabled
-    };
+    return featureModel.valueOf();
   },
 
   async updateFeature({
@@ -52,14 +56,14 @@ const repository = {
       throw error;
     }
 
+    const featureModel = new _feature_model.default(name, features[name]);
+    featureModel.setEnabled(enabled);
+    featureModel.setUpdatedAt(new Date().toISOString());
     featureService.save({
       name,
-      enabled
+      attributes: featureModel.valueOf()
     });
-    return {
-      name,
-      enabled
-    };
+    return featureModel.valueOf();
   },
 
   async deleteFeature({
@@ -94,10 +98,7 @@ const repository = {
       throw error;
     }
 
-    return {
-      name,
-      enabled: features[name]
-    };
+    return new _feature_model.default(name, features[name]).valueOf();
   }
 
 };

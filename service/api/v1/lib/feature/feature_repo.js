@@ -1,6 +1,8 @@
 import FeatureService from './feature_service';
 import config from '../config';
 
+import Feature from './feature_model';
+
 const { feature } = config;
 const featureService = new FeatureService({ bucketName: feature.s3Bucket });
 
@@ -14,12 +16,18 @@ const repository = {
       throw error;
     }
 
-    featureService.save({ name, enabled });
+    const featureModel = new Feature(name, {
+      enabled,
+      createdAt: (new Date()).toISOString(),
+      updatedAt: (new Date()).toISOString()
+    });
 
-    return {
+    featureService.save({
       name,
-      enabled
-    };
+      attributes: featureModel.valueOf()
+    });
+
+    return featureModel.valueOf();
   },
 
   async updateFeature({ name, enabled }) {
@@ -31,12 +39,17 @@ const repository = {
       throw error;
     }
 
-    featureService.save({ name, enabled });
+    const featureModel = new Feature(name, features[name]);
 
-    return {
+    featureModel.setEnabled(enabled);
+    featureModel.setUpdatedAt((new Date()).toISOString());
+
+    featureService.save({
       name,
-      enabled
-    };
+      attributes: featureModel.valueOf()
+    });
+
+    return featureModel.valueOf();
   },
 
   async deleteFeature({ name }) {
@@ -65,10 +78,7 @@ const repository = {
       throw error;
     }
 
-    return {
-      name,
-      enabled: features[name]
-    };
+    return new Feature(name, features[name]).valueOf();
   }
 };
 
