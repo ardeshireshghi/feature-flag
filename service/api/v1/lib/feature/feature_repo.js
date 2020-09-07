@@ -18,8 +18,8 @@ const repository = {
 
     const featureModel = new Feature(name, {
       enabled,
-      createdAt: (new Date()).toISOString(),
-      updatedAt: (new Date()).toISOString()
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     });
 
     featureService.save({
@@ -42,7 +42,7 @@ const repository = {
     const featureModel = new Feature(name, features[name]);
 
     featureModel.setEnabled(enabled);
-    featureModel.setUpdatedAt((new Date()).toISOString());
+    featureModel.setUpdatedAt(new Date().toISOString());
 
     featureService.save({
       name,

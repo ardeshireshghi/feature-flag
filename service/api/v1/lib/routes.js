@@ -1,4 +1,5 @@
 import featureController from './controllers/feature_controller';
+import productController from './controllers/product_controller';
 
 const defaultHandler = (_, res) => {
   res.setHeader('Content-Type', 'application/json');
@@ -12,5 +13,7 @@ const defaultController = {
 export const routeToController = {
   feature: featureController,
   features: featureController,
+  product: productController,
+  products: productController,
   default: defaultController
 };
