@@ -18,9 +18,10 @@
     "@babel/core": "^7.8.3",
     "@babel/node": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
+    "ardi-cache": "git+ssh://git@github.com:ardeshireshghi/ardi-cache.git#master",
     "aws-sdk": "^2.605.0",
     "dotenv": "^8.2.0",
-    "ardi-cache": "git+ssh://git@github.com:ardeshireshghi/ardi-cache.git#master"
+    "md5": "^2.3.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.2",
