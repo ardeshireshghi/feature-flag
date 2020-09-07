@@ -19,16 +19,23 @@ const {
 
 const responseError = (res, message, statusCode) => {
   res.statusCode = statusCode;
-  res.end(message);
+  res.setHeader('Content-Type', 'application/json');
+  res.end(JSON.stringify({
+    error: message
+  }));
+};
+
+const addCORSHeaders = res => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, DELETE, PUT, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 };
 
 const shouldParseRequestBody = reqMethod => ['POST', 'PUT', 'DELETE'].includes(reqMethod);
 
 const featureFlagWebApp = async (req, res) => {
   let statusCode;
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, DELETE, PUT, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  addCORSHeaders(res);
 
   if (req.method === 'OPTIONS') {
     res.end();
@@ -51,7 +58,7 @@ const featureFlagWebApp = async (req, res) => {
     const controller = _routes.routeToController[routeName];
 
     if (!(req.method.toLowerCase() in controller)) {
-      statusCode = 404;
+      statusCode = 405;
       throw new Error('Can not handle request as the handler for method does not exist');
     }
 
