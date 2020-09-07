@@ -6,7 +6,7 @@ const s3 = new S3();
 
 const { feature } = config;
 
-const FEATURE_S3_KEY = `feature-flag-service/user_name_md5_hash/product_name_md5_hash/features.json`;
+const FEATURE_S3_KEY = `feature-flag-service/product_name_md5_hash/features.json`;
 
 const CACHE_KEY = 'features';
 const CACHE_TTL_MINS = feature.cacheTTLMins;
@@ -48,9 +48,9 @@ export default class FeatureService {
     }
   }
 
-  async save({ name, enabled }) {
+  async save({ name, attributes }) {
     let freshFeatureData = await this.fetch({ useCache: false });
-    freshFeatureData = { ...freshFeatureData, [name]: enabled };
+    freshFeatureData = { ...freshFeatureData, [name]: attributes };
 
     await this._persist(freshFeatureData);
     this._cacheEnabled && await this._setCache(freshFeatureData);
