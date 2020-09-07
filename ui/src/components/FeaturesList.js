@@ -6,7 +6,7 @@ function FeaturesList({ features }) {
   return (
     <Pane>
       {Object.keys(features).map((featureName, index) => (
-        <FeatureItem key={index} name={featureName} enabled={features[featureName]} />
+        <FeatureItem key={index} feature={features[featureName]} />
       ))}
     </Pane>
   );
