@@ -11,10 +11,13 @@ const FEATURE_S3_KEY = `feature-flag-service/user_name_md5_hash/product_name_md5
 const CACHE_KEY = 'features';
 const CACHE_TTL_MINS = feature.cacheTTLMins;
 
+const removeKey = (key, {[key]: _, ...rest}) => rest;
+
 export default class FeatureService {
-  constructor({ bucketName, cacheProvider = cacheManager() }) {
+  constructor({ bucketName, cacheEnabled = true, cacheProvider = cacheManager() }) {
     this._bucketName = bucketName;
     this._cache = cacheProvider.store('object');
+    this._cacheEnabled = cacheEnabled;
     this._featureS3KeyChecked = false;
   }
 
@@ -23,19 +26,21 @@ export default class FeatureService {
       await this._createS3KeyIfNotExists();
     }
 
-    const featuresCache = await this._cache.get(CACHE_KEY);
+    if (this._cacheEnabled) {
+      const featuresCache = await this._cache.get(CACHE_KEY);
 
-    if (useCache && featuresCache !== null) {
-      return featuresCache;
+      if (useCache && featuresCache !== null) {
+        return featuresCache;
+      }
     }
 
     try {
-      const featuresDataRaw = (await (s3.getObject(this._createS3CallParams()).promise())).Body.toString('utf-8');
+      const featuresDataRaw = (await s3.getObject(this._createS3CallParams()).promise()).Body.toString('utf-8');
       const featuresData = JSON.parse(featuresDataRaw);
 
-      await this._setCache(featuresData);
+      this._cacheEnabled && await this._setCache(featuresData);
       return featuresData;
-    } catch(err) {
+    } catch (err) {
       const errorMessage = `There was an error fetching features data from S3: ${err.message}`;
       console.error(errorMessage, err);
 
@@ -45,35 +50,27 @@ export default class FeatureService {
 
   async save({ name, enabled }) {
     let freshFeatureData = await this.fetch({ useCache: false });
-    freshFeatureData = {...freshFeatureData, [name]: enabled };
+    freshFeatureData = { ...freshFeatureData, [name]: enabled };
 
     await this._persist(freshFeatureData);
-    await this._setCache(freshFeatureData);
+    this._cacheEnabled && await this._setCache(freshFeatureData);
   }
 
   async delete({ name }) {
     let freshFeatureData = await this.fetch({ useCache: false });
+    const featuresToKeep = removeKey(name, freshFeatureData);
 
-    const featureDataWithoutFeature = Object.keys(freshFeatureData).reduce((newFeaturesData, featureName) => {
-      if (name !== featureName) {
-        return {
-          ...newFeaturesData,
-          [featureName]: freshFeatureData[featureName]
-        };
-      }
-
-      return newFeaturesData;
-    }, {});
-
-    await this._persist(featureDataWithoutFeature);
-    await this._setCache(featureDataWithoutFeature);
+    await this._persist(featuresToKeep);
+    this._cacheEnabled && await this._setCache(featuresToKeep);
   }
 
   async _persist(newFeatureBlob) {
-    await s3.putObject({
-      ...this._createS3CallParams(),
-      Body: JSON.stringify(newFeatureBlob)
-    }).promise();
+    await s3
+      .putObject({
+        ...this._createS3CallParams(),
+        Body: JSON.stringify(newFeatureBlob)
+      })
+      .promise();
   }
 
   _createS3CallParams() {
@@ -90,7 +87,7 @@ export default class FeatureService {
   async _createS3KeyIfNotExists() {
     try {
       const res = await s3.headObject(this._createS3CallParams()).promise();
-    } catch(err) {
+    } catch (err) {
       if (err && err.code === 'NotFound') {
         await this._persist({});
       }
