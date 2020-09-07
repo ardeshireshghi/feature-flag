@@ -22,7 +22,7 @@ function FeatureListPage() {
     async newFeatureName => {
       const newFeature = await createFeature(newFeatureName);
 
-      setFeatures(prevFeatures => ({ ...prevFeatures, [newFeatureName]: newFeature.enabled }));
+      setFeatures(prevFeatures => ({ ...prevFeatures, [newFeatureName]: newFeature }));
       setCreateFeatureDialogShown(false);
     },
     [features]
