@@ -21,13 +21,20 @@ const FEATURE_S3_KEY = `feature-flag-service/user_name_md5_hash/product_name_md5
 const CACHE_KEY = 'features';
 const CACHE_TTL_MINS = feature.cacheTTLMins;
 
+const removeKey = (key, {
+  [key]: _,
+  ...rest
+}) => rest;
+
 class FeatureService {
   constructor({
     bucketName,
+    cacheEnabled = true,
     cacheProvider = (0, _ardiCache.default)()
   }) {
     this._bucketName = bucketName;
     this._cache = cacheProvider.store('object');
+    this._cacheEnabled = cacheEnabled;
     this._featureS3KeyChecked = false;
   }
 
@@ -38,16 +45,18 @@ class FeatureService {
       await this._createS3KeyIfNotExists();
     }
 
-    const featuresCache = await this._cache.get(CACHE_KEY);
+    if (this._cacheEnabled) {
+      const featuresCache = await this._cache.get(CACHE_KEY);
 
-    if (useCache && featuresCache !== null) {
-      return featuresCache;
+      if (useCache && featuresCache !== null) {
+        return featuresCache;
+      }
     }
 
     try {
       const featuresDataRaw = (await s3.getObject(this._createS3CallParams()).promise()).Body.toString('utf-8');
       const featuresData = JSON.parse(featuresDataRaw);
-      await this._setCache(featuresData);
+      this._cacheEnabled && (await this._setCache(featuresData));
       return featuresData;
     } catch (err) {
       const errorMessage = `There was an error fetching features data from S3: ${err.message}`;
@@ -67,7 +76,7 @@ class FeatureService {
       [name]: enabled
     };
     await this._persist(freshFeatureData);
-    await this._setCache(freshFeatureData);
+    this._cacheEnabled && (await this._setCache(freshFeatureData));
   }
 
   async delete({
@@ -76,17 +85,9 @@ class FeatureService {
     let freshFeatureData = await this.fetch({
       useCache: false
     });
-    const featureDataWithoutFeature = Object.keys(freshFeatureData).reduce((newFeaturesData, featureName) => {
-      if (name !== featureName) {
-        return { ...newFeaturesData,
-          [featureName]: freshFeatureData[featureName]
-        };
-      }
-
-      return newFeaturesData;
-    }, {});
-    await this._persist(featureDataWithoutFeature);
-    await this._setCache(featureDataWithoutFeature);
+    const featuresToKeep = removeKey(name, freshFeatureData);
+    await this._persist(featuresToKeep);
+    this._cacheEnabled && (await this._setCache(featuresToKeep));
   }
 
   async _persist(newFeatureBlob) {
