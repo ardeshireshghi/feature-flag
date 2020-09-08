@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Heading, PlusIcon, Pane, majorScale, useTheme, FlagIcon, Text, Spinner } from 'evergreen-ui';
+import { Heading, Pane, majorScale, useTheme, FlagIcon, Text, Spinner } from 'evergreen-ui';
 import { useParams } from 'react-router-dom';
 
 import FeaturesList from '../components/FeaturesList';
@@ -14,13 +14,10 @@ function FeatureListPage(props) {
   const theme = useTheme();
   const { name: productName } = useParams();
 
-  const handleNewFeatureBtnClick = useCallback(
-    e => {
-      e.preventDefault();
-      setCreateFeatureDialogShown(true);
-    },
-    [features]
-  );
+  const handleNewFeatureBtnClick = e => {
+    e.preventDefault();
+    setCreateFeatureDialogShown(true);
+  };
 
   const createNewFeature = useCallback(
     async newFeatureName => {
@@ -29,7 +26,7 @@ function FeatureListPage(props) {
       setFeatures(prevFeatures => ({ ...prevFeatures, [newFeatureName]: newFeature }));
       setCreateFeatureDialogShown(false);
     },
-    [features]
+    [productName]
   );
 
   useEffect(() => {
@@ -40,7 +37,7 @@ function FeatureListPage(props) {
     };
 
     callFeaturesApi();
-  }, []);
+  }, [productName]);
 
   return (
     <Pane display="flex" flexDirection="column" flex={1} background="blueTint" padding={majorScale(2)}>

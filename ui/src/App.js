@@ -1,7 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Redirect, Route } from 'react-router-dom';
-
-import { Button } from 'evergreen-ui';
+import { BrowserRouter as Router, Redirect, Route } from 'react-router-dom';
 import FeatureListPage from './pages/FeatureListPage';
 import { ProductProvider } from './contexts/product-context';
 import ProductListPage from './pages/ProductListPage';

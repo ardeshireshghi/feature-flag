@@ -11,7 +11,6 @@ import {
   Paragraph,
   minorScale,
   majorScale,
-  Heading,
   Small,
   ApplicationsIcon,
   TrashIcon,

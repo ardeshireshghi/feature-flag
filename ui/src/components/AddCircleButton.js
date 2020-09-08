@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Pane, PlusIcon, minorScale, useTheme } from 'evergreen-ui';
+import { Pane, PlusIcon, minorScale } from 'evergreen-ui';
 
 export default function AddCircleButton({ color, ...otherProps }) {
   const [isHovered, setHovered] = useState(false);
 
   return (
+    /* eslint-disable jsx-a11y/anchor-is-valid */
     <a href="#" role="button" {...otherProps}>
       <Pane
         elevation={isHovered ? 2 : 1}
@@ -22,5 +23,6 @@ export default function AddCircleButton({ color, ...otherProps }) {
         <PlusIcon size={24} color="white" />
       </Pane>
     </a>
+    /* eslint-enable jsx-a11y/anchor-is-valid */
   );
 }

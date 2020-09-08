@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Pane, Heading, majorScale, Avatar, useTheme } from 'evergreen-ui';
+import { Link, Pane, majorScale, Avatar, useTheme } from 'evergreen-ui';
 
 import './Nav.css';
 

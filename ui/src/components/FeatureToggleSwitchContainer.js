@@ -1,26 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import FeatureItem from './FeatureItem';
 import { updateFeature } from '../services/features-service';
 
 function FeatureToggleSwitchContainer({ name, initialEnabledState, children }) {
   const [featureIsEnabled, setFeatureEnabled] = useState(initialEnabledState);
   const { name: productName } = useParams();
-  const didMountRef = useRef(false);
 
-  useEffect(() => {
-    if (didMountRef.current) {
-      const persistWithFeaturesApi = async () => {
-        await updateFeature({ productName, name, enabled: featureIsEnabled });
-      };
+  const onFeatureChanged = useCallback(async (isEnabled) => {
+    setFeatureEnabled(isEnabled);
+    await updateFeature({ productName, name, enabled: isEnabled });
+  }, [name, productName, setFeatureEnabled]);
 
-      persistWithFeaturesApi();
-    } else {
-      didMountRef.current = true;
-    }
-  }, [name, featureIsEnabled]);
-
-  return <>{children(featureIsEnabled, setFeatureEnabled)}</>;
+  return <>{children(featureIsEnabled, onFeatureChanged)}</>;
 }
 
 export default FeatureToggleSwitchContainer;

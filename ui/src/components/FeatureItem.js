@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, Text, Small, Switch, majorScale } from 'evergreen-ui';
 import FeatureToggleSwitchContainer from './FeatureToggleSwitchContainer';
 import { dateTimeAgo } from '../services/date-formatter';
@@ -21,9 +21,9 @@ function FeatureItem({ feature: { name, updatedAt, enabled } }) {
         </Small>
       </Text>
       <FeatureToggleSwitchContainer name={name} initialEnabledState={enabled}>
-        {(featureIsEnabled, setFeatureEnabled) => (
+        {(featureIsEnabled, onFeatureChanged) => (
           <Switch
-            onChange={e => setFeatureEnabled(e.target.checked)}
+            onChange={e => onFeatureChanged(e.target.checked)}
             height={24}
             marginLeft="auto"
             checked={featureIsEnabled}

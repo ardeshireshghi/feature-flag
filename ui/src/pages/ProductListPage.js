@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Heading, PlusIcon, Pane, majorScale, useTheme, Spinner } from 'evergreen-ui';
+import { Heading, Pane, majorScale, useTheme, Spinner } from 'evergreen-ui';
 import ProductList from '../components/ProductList';
 import AddCircleButton from '../components/AddCircleButton';
 import CreateProductDialog from '../components/CreateProductDialog';
 import { createProduct, fetchProducts } from '../services/product-service';
-import { ProductProvider, useProductState } from '../contexts/product-context';
+import { useProductState } from '../contexts/product-context';
 
 const sortByCreatedDesc = products => products.sort((p1, p2) => (p1.createdAt > p2.createdAt ? '-1' : '1'));
 
@@ -14,13 +14,10 @@ function ProductListPage() {
   const [isCreateProductDialogShown, setCreateProductDialogShown] = useState(false);
   const theme = useTheme();
 
-  const handleNewProductClick = useCallback(
-    e => {
-      e.preventDefault();
-      setCreateProductDialogShown(true);
-    },
-    [products]
-  );
+  const handleNewProductClick = e => {
+    e.preventDefault();
+    setCreateProductDialogShown(true);
+  };
 
   const createNewProduct = useCallback(
     async ({ name, description }) => {
@@ -28,7 +25,7 @@ function ProductListPage() {
       setProducts(prevProducts => [newProduct, ...prevProducts]);
       setCreateProductDialogShown(false);
     },
-    [products]
+    [setProducts]
   );
 
   useEffect(() => {
@@ -40,7 +37,7 @@ function ProductListPage() {
     };
 
     callProductsApi();
-  }, []);
+  }, [setProducts]);
 
   return (
     <Pane display="flex" flex={1} flexDirection="column" background="blueTint" padding={majorScale(2)}>
