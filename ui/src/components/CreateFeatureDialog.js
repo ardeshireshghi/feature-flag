@@ -1,9 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { Dialog, TextInputField, Button } from 'evergreen-ui';
 
 export default function CreateFeatureDialog({ isShown, onClosed, onSubmit }) {
   const [newFeatureName, setFeatureName] = useState('');
   const [featureNameInvalid, setInvalid] = useState(false);
+  const nameInputEl = useRef(null);
   const [ isLoading, setLoading ] = useState(false);
 
   const handleChange = useCallback(
@@ -27,7 +28,10 @@ export default function CreateFeatureDialog({ isShown, onClosed, onSubmit }) {
       confirmLabel="Create"
       hasCancel={false}
       isConfirmLoading={isLoading}
-      onOpenComplete={() => setLoading(false)}
+      onOpenComplete={() => {
+        setLoading(false);
+        nameInputEl.current && nameInputEl.current.focus();
+      }}
       onConfirm={() => {
         if (!newFeatureName) {
           setInvalid(true);
@@ -40,6 +44,8 @@ export default function CreateFeatureDialog({ isShown, onClosed, onSubmit }) {
       onCloseComplete={onClosed}>
       <TextInputField
         required
+        inputHeight={40}
+        ref={nameInputEl}
         isInvalid={featureNameInvalid}
         label="Feature name"
         placeholder="e.g. Magic link"
