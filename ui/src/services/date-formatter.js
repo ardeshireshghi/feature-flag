@@ -1,4 +1,4 @@
-export const dateTimeAgo = (dateString) => {
+export const dateTimeAgo = dateString => {
   const updatedMinsAgo = (Date.now() - Date.parse(dateString)) / 1000 / 60;
 
   if (updatedMinsAgo < 1) {

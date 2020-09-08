@@ -1,12 +1,9 @@
 import React from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route
-} from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Redirect, Route } from 'react-router-dom';
 
 import { Button } from 'evergreen-ui';
 import FeatureListPage from './pages/FeatureListPage';
+import { ProductProvider } from './contexts/product-context';
 import ProductListPage from './pages/ProductListPage';
 import Nav from './components/Nav';
 
@@ -18,10 +15,12 @@ function AppWithRouter() {
       <Nav />
       <Router>
         <Route exact path="/">
-          <ProductListPage />
+          <Redirect to="/products" />
         </Route>
         <Route exact path="/products">
-          <ProductListPage />
+          <ProductProvider>
+            <ProductListPage />
+          </ProductProvider>
         </Route>
         <Route path="/product/:name">
           <FeatureListPage />

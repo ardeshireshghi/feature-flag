@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pane, Heading, majorScale, Avatar, useTheme } from 'evergreen-ui';
+import { Link, Pane, Heading, majorScale, Avatar, useTheme } from 'evergreen-ui';
 
 import './Nav.css';
 
@@ -17,7 +17,10 @@ export default function Nav() {
       elevation={1}
       height={100}
     >
-      <div className="nav__logo">FeatureToggler</div>
+      <Link className="nav__logo" title="FeatureToggler" href="/">
+        FeatureToggler
+      </Link>
+
       <Avatar marginLeft="auto" isSolid name="Ardeshir Eshghi" size={40} />
     </Pane>
   );

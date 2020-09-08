@@ -1,21 +1,28 @@
 const FEATURES_API_BASE_URL = process.env.REACT_APP_FEATURE_FLAG_SERVICE_BASE_URL;
 
-const doCreateFeature = async featureName => {
-  return await fetch(`${FEATURES_API_BASE_URL}/api/v1/feature`, {
+const featureApiUrlForProductName = productName => {
+  const url = new URL(`${FEATURES_API_BASE_URL}/api/v1/feature`);
+  url.searchParams.append('productName', productName);
+
+  return url;
+};
+
+const doCreateFeature = async ({ name, productName }) => {
+  return await fetch(featureApiUrlForProductName(productName), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
     credentials: 'same-origin',
     body: JSON.stringify({
-      name: featureName,
+      name,
       enabled: false
     })
   });
 };
 
-const doUpdateFeature = async ({ name, enabled }) => {
-  return await fetch(`${FEATURES_API_BASE_URL}/api/v1/feature`, {
+const doUpdateFeature = async ({ name, enabled, productName }) => {
+  return await fetch(featureApiUrlForProductName(productName), {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
@@ -28,8 +35,8 @@ const doUpdateFeature = async ({ name, enabled }) => {
   });
 };
 
-const doFetchFeatures = async () => {
-  return await fetch(`${FEATURES_API_BASE_URL}/api/v1/features`);
+const doFetchFeatures = async ({ productName }) => {
+  return await fetch(featureApiUrlForProductName(productName));
 };
 
 const withErrorHandling = (actionType, featureRequestFn) => {

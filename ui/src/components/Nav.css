@@ -3,5 +3,10 @@
 .nav__logo {
   font-family: 'Playfair Display', serif;
   font-size: calc(1rem + 2vmin);
+  text-decoration: none;
+  color: white;
+}
+
+.nav__logo:hover {
   color: white;
 }

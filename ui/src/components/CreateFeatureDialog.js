@@ -5,7 +5,7 @@ export default function CreateFeatureDialog({ isShown, onClosed, onSubmit }) {
   const [newFeatureName, setFeatureName] = useState('');
   const [featureNameInvalid, setInvalid] = useState(false);
   const nameInputEl = useRef(null);
-  const [ isLoading, setLoading ] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const handleChange = useCallback(
     ({ target }) => {
@@ -41,7 +41,8 @@ export default function CreateFeatureDialog({ isShown, onClosed, onSubmit }) {
         }
       }}
       width={'100vw'}
-      onCloseComplete={onClosed}>
+      onCloseComplete={onClosed}
+    >
       <TextInputField
         required
         inputHeight={40}

@@ -2,10 +2,10 @@ import React, { useState, useCallback, useRef } from 'react';
 import { Dialog, TextInputField, Button, Textarea, Label, Pane } from 'evergreen-ui';
 
 export default function CreateProductDialog({ isShown, onClosed, onSubmit }) {
-  const [ newProductAttributes, setProductAttributes ] = useState({});
-  const [ productNameInvalid, setNameInvalid ] = useState(false);
+  const [newProductAttributes, setProductAttributes] = useState({});
+  const [productNameInvalid, setNameInvalid] = useState(false);
   const nameInputEl = useRef(null);
-  const [ isLoading, setLoading ] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   const handleNameChange = useCallback(
     ({ target }) => {
@@ -15,14 +15,14 @@ export default function CreateProductDialog({ isShown, onClosed, onSubmit }) {
       }
 
       setNameInvalid(false);
-      setProductAttributes((prevAttrs) => ({...prevAttrs, name: target.value}));
+      setProductAttributes(prevAttrs => ({ ...prevAttrs, name: target.value }));
     },
     [newProductAttributes]
   );
 
   const handleDescriptionChange = useCallback(
     ({ target }) => {
-      setProductAttributes((prevAttrs) => ({...prevAttrs, description: target.value}));
+      setProductAttributes(prevAttrs => ({ ...prevAttrs, description: target.value }));
     },
     [newProductAttributes]
   );
@@ -48,7 +48,8 @@ export default function CreateProductDialog({ isShown, onClosed, onSubmit }) {
         }
       }}
       width={'100vw'}
-      onCloseComplete={onClosed}>
+      onCloseComplete={onClosed}
+    >
       <TextInputField
         required
         inputHeight={40}
@@ -59,11 +60,7 @@ export default function CreateProductDialog({ isShown, onClosed, onSubmit }) {
         ref={nameInputEl}
       />
       <Pane>
-        <Label
-          htmlFor="description"
-          marginBottom={4}
-          display="block"
-        >
+        <Label htmlFor="description" marginBottom={4} display="block">
           Description
         </Label>
         <Textarea

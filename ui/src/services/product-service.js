@@ -1,6 +1,6 @@
 const FEATURES_API_BASE_URL = process.env.REACT_APP_FEATURE_FLAG_SERVICE_BASE_URL;
 
-const doCreateProduct = async ({ name, description}) => {
+const doCreateProduct = async ({ name, description }) => {
   return await fetch(`${FEATURES_API_BASE_URL}/api/v1/product`, {
     method: 'POST',
     headers: {
@@ -11,6 +11,20 @@ const doCreateProduct = async ({ name, description}) => {
       name,
       description
     })
+  });
+};
+
+const doDeleteProduct = async ({ name }) => {
+  const url = new URL(`${FEATURES_API_BASE_URL}/api/v1/product`);
+  url.searchParams.append('name', name);
+
+  return await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'same-origin',
+    body: ''
   });
 };
 
@@ -37,3 +51,4 @@ const withErrorHandling = (actionType, featureRequestFn) => {
 
 export const fetchProducts = withErrorHandling('fetch', doFetchProducts);
 export const createProduct = withErrorHandling('create', doCreateProduct);
+export const deleteProduct = withErrorHandling('delete', doDeleteProduct);
