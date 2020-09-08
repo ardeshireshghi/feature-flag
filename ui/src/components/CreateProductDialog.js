@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { Dialog, TextInputField, Button, Textarea, Label, Pane } from 'evergreen-ui';
+import { Dialog, TextInputField, Textarea, Label, Pane } from 'evergreen-ui';
 
 export default function CreateProductDialog({ isShown, onClosed, onSubmit }) {
   const [newProductAttributes, setProductAttributes] = useState({});
@@ -17,14 +17,14 @@ export default function CreateProductDialog({ isShown, onClosed, onSubmit }) {
       setNameInvalid(false);
       setProductAttributes(prevAttrs => ({ ...prevAttrs, name: target.value }));
     },
-    [newProductAttributes]
+    [setProductAttributes]
   );
 
   const handleDescriptionChange = useCallback(
     ({ target }) => {
       setProductAttributes(prevAttrs => ({ ...prevAttrs, description: target.value }));
     },
-    [newProductAttributes]
+    [setProductAttributes]
   );
 
   return (

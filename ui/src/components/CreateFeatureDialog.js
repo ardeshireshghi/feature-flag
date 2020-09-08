@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react';
-import { Dialog, TextInputField, Button } from 'evergreen-ui';
+import { Dialog, TextInputField } from 'evergreen-ui';
 
 export default function CreateFeatureDialog({ isShown, onClosed, onSubmit }) {
   const [newFeatureName, setFeatureName] = useState('');
@@ -17,7 +17,7 @@ export default function CreateFeatureDialog({ isShown, onClosed, onSubmit }) {
       setInvalid(false);
       setFeatureName(target.value);
     },
-    [newFeatureName]
+    [setFeatureName]
   );
 
   return (

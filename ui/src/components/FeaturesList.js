@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pane, majorScale } from 'evergreen-ui';
+import { Pane } from 'evergreen-ui';
 import FeatureItem from './FeatureItem';
 
 function FeaturesList({ features }) {
