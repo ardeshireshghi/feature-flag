@@ -23,7 +23,9 @@ export default class ProductService {
 
       return parsedProductData;
     } catch (err) {
-      console.error('Error getting product data from S3', err);
+      if (err.code !== 'NoSuchKey') {
+        console.error('Error getting product data from S3', err);
+      }
 
       const newError = new Error(`There was an error fetching product data: ${err.message}`);
       newError.code = err.code === 'NoSuchKey' ? 'NotFound' : 'GenericError';
