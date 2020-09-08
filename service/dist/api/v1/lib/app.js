@@ -15,32 +15,20 @@ var _request_bodyparser = require("./parsers/request_bodyparser");
 
 var _url_parser = require("./parsers/url_parser");
 
+var _response = require("./http/response");
+
+var _middleware = require("./middleware");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const {
   apiRoutePattern
 } = _config.default;
 
-const responseError = (res, message, statusCode) => {
-  res.statusCode = statusCode;
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify({
-    error: message
-  }));
-};
-
-const addCORSHeaders = res => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, DELETE, PUT, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-};
-
 const shouldParseRequestBody = reqMethod => ['POST', 'PUT', 'DELETE'].includes(reqMethod);
 
 const featureFlagWebApp = async (req, res) => {
   let statusCode;
-  (0, _url_parser.parseUrl)(req);
-  addCORSHeaders(res);
 
   if (req.method === 'OPTIONS') {
     res.end();
@@ -91,9 +79,14 @@ const featureFlagWebApp = async (req, res) => {
     }
   } catch (err) {
     statusCode = statusCode || 500;
-    responseError(res, err.message, statusCode);
+    (0, _response.responseError)(res, err.message, statusCode);
   }
 };
 
-var _default = featureFlagWebApp;
+var _default = (0, _middleware.createPreprocessingMiddleware)((req, res, next) => {
+  (0, _url_parser.parseUrl)(req);
+  (0, _response.addCORSHeaders)(res);
+  next();
+}, featureFlagWebApp);
+
 exports.default = _default;

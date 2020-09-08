@@ -4,28 +4,15 @@ import config from './config';
 import { routeToController } from './routes';
 import { parseReqBody } from './parsers/request_bodyparser';
 import { parseUrl } from './parsers/url_parser';
+import { responseError, addCORSHeaders } from './http/response';
+import { createPreprocessingMiddleware } from './middleware';
 
 const { apiRoutePattern } = config;
-
-const responseError = (res, message, statusCode) => {
-  res.statusCode = statusCode;
-  res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify({ error: message }));
-};
-
-const addCORSHeaders = res => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, GET, DELETE, PUT, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-};
 
 const shouldParseRequestBody = reqMethod => ['POST', 'PUT', 'DELETE'].includes(reqMethod);
 
 const featureFlagWebApp = async (req, res) => {
   let statusCode;
-
-  parseUrl(req);
-  addCORSHeaders(res);
 
   if (req.method === 'OPTIONS') {
     res.end();
@@ -82,4 +69,9 @@ const featureFlagWebApp = async (req, res) => {
   }
 };
 
-export default featureFlagWebApp;
+export default createPreprocessingMiddleware((req, res, next) => {
+  parseUrl(req);
+  addCORSHeaders(res);
+
+  next();
+}, featureFlagWebApp);
