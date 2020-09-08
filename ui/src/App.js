@@ -22,7 +22,7 @@ function AppWithRouter() {
             <ProductListPage />
           </ProductProvider>
         </Route>
-        <Route path="/product/:name">
+        <Route path="/product/:name/features">
           <FeatureListPage />
         </Route>
       </Router>

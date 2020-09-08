@@ -26,7 +26,7 @@ function ProductItem({ product }) {
   let history = useHistory();
 
   const handleViewProductClick = () => {
-    history.push(`/product/${product.name}`);
+    history.push(`/product/${product.name}/features`);
   };
 
   const handleDeleteBtn = async () => {
