@@ -53,8 +53,7 @@ const featureFlagWebApp = async (req, res) => {
     try {
       const handler = controller[req.method.toLowerCase()];
 
-      console.log(req.query);
-      const result = await handler(req.method === 'GET' ? req.query : req.body);
+      const result = await handler(req.method === 'GET' ? req.query : { ...req.query, ...req.body });
 
       res.setHeader('Content-Type', 'application/json');
       res.statusCode = req.method === 'POST' ? 201 : 200;

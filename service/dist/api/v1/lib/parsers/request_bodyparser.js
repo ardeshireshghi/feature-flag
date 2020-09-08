@@ -12,7 +12,8 @@ const parseReqBody = req => {
       data.push(chunk);
     });
     req.on('end', () => {
-      resolve(JSON.parse(Buffer.concat(data)));
+      let body = Buffer.concat(data);
+      resolve(JSON.parse(body.length === 0 ? '{}' : body));
     });
     req.on('error', err => {
       reject(err);

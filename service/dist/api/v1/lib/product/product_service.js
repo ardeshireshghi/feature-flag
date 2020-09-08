@@ -91,7 +91,7 @@ class ProductService {
     name,
     attributes
   }) {
-    await this._persist(name, attributes);
+    await Promise.all([this._persist(name, attributes), this._createEmptyFeatures(name)]);
   }
 
   async delete({
@@ -108,6 +108,14 @@ class ProductService {
 
   async _delete(productName) {
     await s3.deleteObject({ ...this._createS3ParamsByProductName(productName)
+    }).promise();
+  }
+
+  async _createEmptyFeatures(productName) {
+    s3.putObject({
+      Bucket: this._bucketName,
+      Key: `${PRODUCT_S3_KEY_PREFIX}/${(0, _md.default)(productName)}/features.json`,
+      Body: '{}'
     }).promise();
   }
 

@@ -1,9 +1,11 @@
 export const responseError = (res, message, statusCode) => {
   res.statusCode = statusCode;
   res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify({
-    error: message
-  }));
+  res.end(
+    JSON.stringify({
+      error: message
+    })
+  );
 };
 
 export const addCORSHeaders = res => {
