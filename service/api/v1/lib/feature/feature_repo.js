@@ -7,8 +7,12 @@ const { feature } = config;
 const featureService = new FeatureService({ bucketName: feature.s3Bucket });
 
 const repository = {
-  async createFeature({ name, enabled }) {
-    const features = await featureService.fetch();
+  async createFeature({ productName, name, enabled }) {
+    if (!productName) {
+      throw new Error('productName should be provided for features');
+    }
+
+    const features = await featureService.fetch({ productName });
 
     if (name in features) {
       const error = new Error(`Cannot create Feature name \'${name}\'. Feature name already exists`);
@@ -23,6 +27,7 @@ const repository = {
     });
 
     featureService.save({
+      productName,
       name,
       attributes: featureModel.valueOf()
     });
@@ -30,8 +35,11 @@ const repository = {
     return featureModel.valueOf();
   },
 
-  async updateFeature({ name, enabled }) {
-    const features = await featureService.fetch();
+  async updateFeature({ productName, name, enabled }) {
+    if (!productName) {
+      throw new Error('productName should be provided for features');
+    }
+    const features = await featureService.fetch({ productName });
 
     if (!(name in features)) {
       const error = new Error(`Cannot update non-existing Feature name \'${name}\'.`);
@@ -45,6 +53,7 @@ const repository = {
     featureModel.setUpdatedAt(new Date().toISOString());
 
     featureService.save({
+      productName,
       name,
       attributes: featureModel.valueOf()
     });
@@ -52,8 +61,11 @@ const repository = {
     return featureModel.valueOf();
   },
 
-  async deleteFeature({ name }) {
-    const features = await featureService.fetch();
+  async deleteFeature({ productName, name }) {
+    if (!productName) {
+      throw new Error('productName should be provided for features');
+    }
+    const features = await featureService.fetch({ productName });
 
     if (!(name in features)) {
       const error = new Error(`Cannot delete non-existing Feature name \'${name}\'.`);
@@ -61,12 +73,16 @@ const repository = {
       throw error;
     }
 
-    featureService.delete({ name });
+    featureService.delete({ productName, name });
     return true;
   },
 
-  async getFeature({ name } = {}) {
-    const features = await featureService.fetch();
+  async getFeature({ name, productName } = {}) {
+    if (!productName) {
+      throw new Error('productName should be provided for features');
+    }
+
+    const features = await featureService.fetch({ productName });
 
     if (!name) {
       return features;

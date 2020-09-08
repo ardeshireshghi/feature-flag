@@ -21,10 +21,17 @@ const featureService = new _feature_service.default({
 });
 const repository = {
   async createFeature({
+    productName,
     name,
     enabled
   }) {
-    const features = await featureService.fetch();
+    if (!productName) {
+      throw new Error('productName should be provided for features');
+    }
+
+    const features = await featureService.fetch({
+      productName
+    });
 
     if (name in features) {
       const error = new Error(`Cannot create Feature name \'${name}\'. Feature name already exists`);
@@ -38,6 +45,7 @@ const repository = {
       updatedAt: new Date().toISOString()
     });
     featureService.save({
+      productName,
       name,
       attributes: featureModel.valueOf()
     });
@@ -45,10 +53,17 @@ const repository = {
   },
 
   async updateFeature({
+    productName,
     name,
     enabled
   }) {
-    const features = await featureService.fetch();
+    if (!productName) {
+      throw new Error('productName should be provided for features');
+    }
+
+    const features = await featureService.fetch({
+      productName
+    });
 
     if (!(name in features)) {
       const error = new Error(`Cannot update non-existing Feature name \'${name}\'.`);
@@ -60,6 +75,7 @@ const repository = {
     featureModel.setEnabled(enabled);
     featureModel.setUpdatedAt(new Date().toISOString());
     featureService.save({
+      productName,
       name,
       attributes: featureModel.valueOf()
     });
@@ -67,9 +83,16 @@ const repository = {
   },
 
   async deleteFeature({
+    productName,
     name
   }) {
-    const features = await featureService.fetch();
+    if (!productName) {
+      throw new Error('productName should be provided for features');
+    }
+
+    const features = await featureService.fetch({
+      productName
+    });
 
     if (!(name in features)) {
       const error = new Error(`Cannot delete non-existing Feature name \'${name}\'.`);
@@ -78,15 +101,23 @@ const repository = {
     }
 
     featureService.delete({
+      productName,
       name
     });
     return true;
   },
 
   async getFeature({
-    name
+    name,
+    productName
   } = {}) {
-    const features = await featureService.fetch();
+    if (!productName) {
+      throw new Error('productName should be provided for features');
+    }
+
+    const features = await featureService.fetch({
+      productName
+    });
 
     if (!name) {
       return features;
