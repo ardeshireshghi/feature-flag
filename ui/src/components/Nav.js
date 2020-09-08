@@ -17,8 +17,8 @@ export default function Nav() {
       elevation={1}
       height={100}
     >
-      <Link className="nav__logo" title="FeatureToggler" href="/">
-        FeatureToggler
+      <Link className="nav__link" title="FeatureToggler" href="/">
+        <span className="nav__logo">FeatureToggler</span>
       </Link>
 
       <Avatar marginLeft="auto" isSolid name="Ardeshir Eshghi" size={40} />

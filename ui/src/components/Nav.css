@@ -1,9 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
 
+.nav__link {
+  text-decoration: none !important;
+}
+
 .nav__logo {
   font-family: 'Playfair Display', serif;
   font-size: calc(1rem + 2vmin);
-  text-decoration: none;
+
   color: white;
 }
 
