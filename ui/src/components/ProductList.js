@@ -6,6 +6,7 @@ import { deleteProduct } from '../services/product-service';
 import {
   Card,
   Button,
+  Text,
   Pane,
   Paragraph,
   minorScale,
@@ -143,6 +144,7 @@ function ProductItem({ product }) {
 
 function ProductList({ products }) {
   const theme = useTheme();
+
   return products.length > 0 ? (
     <Pane display="flex" flexWrap="wrap">
       {products.map((product, index) => (
@@ -150,8 +152,11 @@ function ProductList({ products }) {
       ))}
     </Pane>
   ) : (
-    <Pane display="flex" flexGrow="1" alignItems="center" justifyContent="center">
-      <ApplicationsIcon color={theme.scales.blue.B5} transform="scale(10)" />
+    <Pane display="flex" flexDirection="column" flexGrow="1" alignItems="center" justifyContent="center">
+      <ApplicationsIcon color={theme.scales.blue.B5} transform="scale(8)" />
+      <Text color={theme.scales.neutral.N6A} position="relative" top={majorScale(9)}>
+            No products created yet
+      </Text>
     </Pane>
   );
 }
