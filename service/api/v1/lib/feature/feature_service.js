@@ -72,7 +72,6 @@ export default class FeatureService {
   }
 
   _createS3CallParams(featuresProductName) {
-    console.log('KEY FOR FEATURES', featuresProductName, featureS3Key(featuresProductName));
     return {
       Bucket: this._bucketName,
       Key: featureS3Key(featuresProductName)
