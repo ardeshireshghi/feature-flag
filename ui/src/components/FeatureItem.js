@@ -3,7 +3,7 @@ import { Card, Text, Small, Switch, majorScale } from 'evergreen-ui';
 import FeatureToggleSwitchContainer from './FeatureToggleSwitchContainer';
 import { dateTimeAgo } from '../services/date-formatter';
 
-function FeatureItem({feature: { name, updatedAt, enabled }}) {
+function FeatureItem({ feature: { name, updatedAt, enabled } }) {
   return (
     <Card
       padding={majorScale(2)}
@@ -16,7 +16,9 @@ function FeatureItem({feature: { name, updatedAt, enabled }}) {
     >
       <Text size={500}>
         {name}
-        <Small color="#a9a9a9" display="block">Last update: {dateTimeAgo(updatedAt)}</Small>
+        <Small color="#a9a9a9" display="block">
+          Last update: {dateTimeAgo(updatedAt)}
+        </Small>
       </Text>
       <FeatureToggleSwitchContainer name={name} initialEnabledState={enabled}>
         {(featureIsEnabled, setFeatureEnabled) => (

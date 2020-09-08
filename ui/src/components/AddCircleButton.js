@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Pane, PlusIcon, minorScale, useTheme } from 'evergreen-ui';
 
-export default function AddCircleButton({color, ...otherProps}) {
-  const [ isHovered, setHovered ] = useState(false);
+export default function AddCircleButton({ color, ...otherProps }) {
+  const [isHovered, setHovered] = useState(false);
 
   return (
     <a href="#" role="button" {...otherProps}>
@@ -18,7 +18,7 @@ export default function AddCircleButton({color, ...otherProps}) {
         transform={!isHovered ? 'scale(1)' : 'scale(1.08)'}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        >
+      >
         <PlusIcon size={24} color="white" />
       </Pane>
     </a>
