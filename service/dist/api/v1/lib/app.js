@@ -9,6 +9,8 @@ var _url = _interopRequireDefault(require("url"));
 
 var _config = _interopRequireDefault(require("./config"));
 
+var _app_factory = require("./app_factory");
+
 var _routes = require("./routes");
 
 var _request_bodyparser = require("./parsers/request_bodyparser");
@@ -17,17 +19,18 @@ var _url_parser = require("./parsers/url_parser");
 
 var _response = require("./http/response");
 
-var _middleware = require("./middleware");
+var _auth = require("./auth");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+const app = (0, _app_factory.createApp)();
 const {
   apiRoutePattern
 } = _config.default;
 
 const shouldParseRequestBody = reqMethod => ['POST', 'PUT', 'DELETE'].includes(reqMethod);
 
-const featureFlagWebApp = async (req, res) => {
+const featureFlagWebAppHandler = async (req, res) => {
   let statusCode;
 
   if (req.method === 'OPTIONS') {
@@ -84,10 +87,12 @@ const featureFlagWebApp = async (req, res) => {
   }
 };
 
-var _default = (0, _middleware.createPreprocessingMiddleware)((req, res, next) => {
+app.use((req, res, next) => {
   (0, _url_parser.parseUrl)(req);
   (0, _response.addCORSHeaders)(res);
   next();
-}, featureFlagWebApp);
+}); // app.use(authoriser);
 
+app.use(featureFlagWebAppHandler);
+var _default = app;
 exports.default = _default;

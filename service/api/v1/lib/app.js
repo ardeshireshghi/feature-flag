@@ -1,17 +1,19 @@
 import url from 'url';
 import config from './config';
 
+import { createApp } from './app_factory';
 import { routeToController } from './routes';
 import { parseReqBody } from './parsers/request_bodyparser';
 import { parseUrl } from './parsers/url_parser';
 import { responseError, addCORSHeaders } from './http/response';
-import { createPreprocessingMiddleware } from './middleware';
+import { authoriser } from './auth';
 
+const app = createApp();
 const { apiRoutePattern } = config;
 
 const shouldParseRequestBody = reqMethod => ['POST', 'PUT', 'DELETE'].includes(reqMethod);
 
-const featureFlagWebApp = async (req, res) => {
+const featureFlagWebAppHandler = async (req, res) => {
   let statusCode;
 
   if (req.method === 'OPTIONS') {
@@ -68,9 +70,14 @@ const featureFlagWebApp = async (req, res) => {
   }
 };
 
-export default createPreprocessingMiddleware((req, res, next) => {
+app.use((req, res, next) => {
   parseUrl(req);
   addCORSHeaders(res);
 
   next();
-}, featureFlagWebApp);
+});
+
+// app.use(authoriser);
+app.use(featureFlagWebAppHandler);
+
+export default app;
