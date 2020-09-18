@@ -8,8 +8,7 @@ dotEnv.config();
 
 const { APP_PORT } = process.env;
 
-http
-  .createServer(featuresFlagApiApp)
+featuresFlagApiApp
   .listen(APP_PORT, () => {
     console.log(`Listening to port ${APP_PORT}`);
   });
