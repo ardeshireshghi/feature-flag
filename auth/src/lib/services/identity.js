@@ -1,6 +1,5 @@
 const { promisify } = require('util');
 const AmazonCognitoIdentity = require('amazon-cognito-identity-js');
-const CognitoExpress = require('cognito-express');
 const AuthToken = require('../models/auth-token');
 
 require('dotenv').config();
@@ -13,13 +12,6 @@ const poolData = {
   UserPoolId : process.env.COGNITO_USER_POOL_ID,
   ClientId : process.env.COGNITO_APP_CLIENT_ID
 };
-
-const cognitoExpress = new CognitoExpress({
-  region: 'eu-west-1',
-  cognitoUserPoolId: process.env.COGNITO_USER_POOL_ID || 'eu-west-1_QrtJjYOkV',
-  tokenUse: 'access', //Possible Values: access | id
-  tokenExpiration: 3600000 // Up to default expiration of 1 hour (3600000 ms)
-});
 
 const userPool = new CognitoUserPool(poolData);
 
@@ -71,22 +63,6 @@ const identityService = {
         } else {
           resolve(AuthToken.fromCognitoSession(session).toJson());
         }
-      });
-    });
-  },
-  async authorize({accessToken}) {
-    return new Promise((resolve, reject) => {
-      cognitoExpress.validate(accessToken, (err, response) => {
-        if (err) {
-          const newError = new Error('Invalid or expired access token');
-          newError.code = err.code;
-
-          reject(newError);
-
-          return;
-        }
-
-        resolve(response);
       });
     });
   }
