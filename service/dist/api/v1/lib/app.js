@@ -33,11 +33,6 @@ const shouldParseRequestBody = reqMethod => ['POST', 'PUT', 'DELETE'].includes(r
 const featureFlagWebAppHandler = async (req, res) => {
   let statusCode;
 
-  if (req.method === 'OPTIONS') {
-    res.end();
-    return;
-  }
-
   try {
     let routeName = 'default';
     const uriSegmentMatch = req.pathname.match(apiRoutePattern);
@@ -88,11 +83,17 @@ const featureFlagWebAppHandler = async (req, res) => {
 };
 
 app.use((req, res, next) => {
-  (0, _url_parser.parseUrl)(req);
   (0, _response.addCORSHeaders)(res);
-  next();
-}); // app.use(authoriser);
 
+  if (req.method === 'OPTIONS') {
+    res.end();
+    return;
+  }
+
+  (0, _url_parser.parseUrl)(req);
+  next();
+});
+app.use(_auth.authoriser);
 app.use(featureFlagWebAppHandler);
 var _default = app;
 exports.default = _default;
