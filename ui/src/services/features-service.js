@@ -1,3 +1,5 @@
+import authService from './auth-service';
+
 const FEATURES_API_BASE_URL = process.env.REACT_APP_FEATURE_FLAG_SERVICE_BASE_URL;
 
 const featureApiUrlForProductName = (productName, action) => {
@@ -7,12 +9,18 @@ const featureApiUrlForProductName = (productName, action) => {
   return url;
 };
 
+const headers = () => {
+  return {
+    'Authorization': `Bearer ${authService.getAccessToken()}`,
+    'Content-Type': 'application/json',
+    'x-client-type': 'web'
+  };
+};
+
 const doCreateFeature = async ({ name, productName }) => {
   return await fetch(featureApiUrlForProductName(productName, 'create'), {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers: headers(),
     credentials: 'same-origin',
     body: JSON.stringify({
       name,
@@ -24,9 +32,7 @@ const doCreateFeature = async ({ name, productName }) => {
 const doUpdateFeature = async ({ name, enabled, productName }) => {
   return await fetch(featureApiUrlForProductName(productName, 'update'), {
     method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers: headers(),
     credentials: 'same-origin',
     body: JSON.stringify({
       name,
@@ -36,7 +42,11 @@ const doUpdateFeature = async ({ name, enabled, productName }) => {
 };
 
 const doFetchFeatures = async ({ productName }) => {
-  return await fetch(featureApiUrlForProductName(productName, 'fetch'));
+  return await fetch(featureApiUrlForProductName(productName, 'fetch'), {
+    credentials: 'same-origin',
+    method: 'GET',
+    headers: headers()
+  });
 };
 
 const withErrorHandling = (actionType, featureRequestFn) => {
@@ -45,12 +55,22 @@ const withErrorHandling = (actionType, featureRequestFn) => {
       const response = await featureRequestFn(...thisArgs);
 
       if (!response.ok) {
-        throw new Error(`Feature flag API error, response status: ${response.status}`);
+        const error = new Error(`Feature flag API error, response status: ${response.status}`);
+        error.status = response.status;
+
+        throw error;
       }
 
       return await response.json();
     } catch (err) {
       console.error(`Error ${actionType} feature`, err, thisArgs);
+
+      // Check for Authorization error
+      if (err.status === 401) {
+        window.location.assign(authService.getLoginUrl());
+        return;
+      }
+
       throw err;
     }
   };
