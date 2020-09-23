@@ -1,0 +1,62 @@
+
+service: feature-flag-service
+
+provider:
+  name: aws
+  stage: ${opt:stage, 'dev'}
+  region: eu-west-1
+  runtime: nodejs12.x
+  memorySize: 512
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - cognito-idp:AdminAddUserToGroup
+        - cognito-idp:AdminConfirmSignUp
+        - cognito-idp:AdminCreateUser
+        - cognito-idp:AdminSetUserPassword
+        - cognito-idp:AdminSetUserSettings
+        - cognito-idp:ChangePassword
+        - cognito-idp:ConfirmSignUp
+        - cognito-idp:GetUser
+        - cognito-idp:ListUsers
+      Resource: "*"
+
+custom:
+  prefix: ${self:provider.stage}-${self:service}
+  serverless-offline:
+    httpPort: 8080
+
+plugins:
+  - serverless-offline
+
+package:
+  exclude:
+    - node_modules/**
+
+functions:
+  auth:
+    environment:
+      NODE_ENV: production
+      COGNITO_USER_POOL_ID: eu-west-1_TijnuyGsL
+      COGNITO_APP_CLIENT_ID: 4b8vhokqp1upoa5t4hlp9ourhk
+    handler: auth/serverless/index.handler
+    events:
+      - http:
+          path: /id
+          method: POST
+          cors: true
+  api:
+    environment:
+      FEATURE_S3_BUCKET: feature-service-bucket
+      FEATURE_CACHE_TTL_MINS: 1
+      COGNITO_APP_POOL_ID: eu-west-1_TijnuyGsL
+      COGNITO_USER_POOL_ID: eu-west-1_bxc84ueLv
+
+    handler: service/serverless/index.handler
+    events:
+      - http:
+          path: /{any+}
+          method: ANY
+          cors: true
+
+

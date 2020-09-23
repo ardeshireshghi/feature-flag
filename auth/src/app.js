@@ -10,6 +10,14 @@ const apiRouter = require('./routes/api');
 app.use(bodyParser.json());
 app.use('/', apiRouter);
 
-app.listen(PORT, () => {
+const startApp = () => app.listen(PORT, () => {
   console.log(`Auth service started on port: ${PORT}!`);
 });
+
+exports.getApp = () => {
+  return app;
+}
+
+if (require.main === module) {
+  startApp();
+}
