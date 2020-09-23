@@ -22,7 +22,8 @@
     "aws-sdk": "^2.605.0",
     "cognito-express": "^2.0.18",
     "dotenv": "^8.2.0",
-    "md5": "^2.3.0"
+    "md5": "^2.3.0",
+    "serverless-http": "^2.6.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.2",

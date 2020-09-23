@@ -30,15 +30,7 @@ const validateToken = async ({
   accessToken,
   tokenValidator
 }) => {
-  try {
-    const response = await tokenValidator(accessToken);
-    return response;
-  } catch (err) {
-    console.log('Error validating access token', accessToken, err);
-    const newError = new Error('Invalid or expired access token');
-    newError.code = err.code;
-    throw newError;
-  }
+  await tokenValidator(accessToken);
 };
 
 const authoriser = async (req, res, next) => {
@@ -62,7 +54,6 @@ const authoriser = async (req, res, next) => {
   if (req.headers['x-client-type'] && req.headers['x-client-type'] === 'web') {
     tokenValidator = cognitoValidateUser;
   } else {
-    console.log('GETS TO APP VALIDATOR');
     tokenValidator = cognitoValidateApp;
   }
 
@@ -73,12 +64,14 @@ const authoriser = async (req, res, next) => {
     });
     next();
   } catch (err) {
+    console.log('Error validating access token', accessTokenFromClient, err);
+    const newError = new Error('Invalid or expired access token');
     res.statusCode = 401;
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify({
       error: true,
-      code: err.code,
-      message: err.message,
+      code: newError.code,
+      message: newError.message,
       status: 401
     }));
   }

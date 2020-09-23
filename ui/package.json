@@ -15,7 +15,7 @@
     "react-scripts": "3.4.3"
   },
   "scripts": {
-    "start": "REACT_APP_FEATURE_FLAG_SERVICE_BASE_URL=http://localhost:8082 REACT_APP_COGNITO_CLIENT_ID=2n509urhek229vnc30a6ddvdup react-scripts start",
+    "start": "REACT_APP_FEATURE_FLAG_SERVICE_BASE_URL=http://localhost:8080/dev REACT_APP_COGNITO_CLIENT_ID=2n509urhek229vnc30a6ddvdup react-scripts start",
     "build": "./scripts/build.sh",
     "serve:build": "serve -s build",
     "test": "react-scripts test",

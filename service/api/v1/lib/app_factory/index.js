@@ -7,22 +7,25 @@ export function createApp() {
     next();
   };
 
+  const composedHandler = () => {
+    return middlewares.reverse().reduce((composedHandler, middlewareFn) => {
+      return (req, res) => {
+        return middlewareFn(req, res, () => {
+          composedHandler(req, res);
+        });
+      };
+    }, app);
+  };
+
   return {
     use(middlewareFn) {
       middlewares.push(middlewareFn);
     },
 
     listen(...thisArgs) {
-      const composedHandler = middlewares.reverse().reduce((composedHandler, middlewareFn) => {
-        return (req, res) => {
-          return middlewareFn(req, res, () => {
-            composedHandler(req, res);
-          });
-        };
-      }, app);
-
-      const server = http.createServer(composedHandler);
+      const server = http.createServer(composedHandler());
       return server.listen(...thisArgs);
-    }
+    },
+    handler: composedHandler
   };
 }
