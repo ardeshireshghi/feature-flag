@@ -13,7 +13,7 @@ const LoginHandler = () => {
     return <h1>Access token missing</h1>;
   }
 
-  const authParams = Object.fromEntries(new URLSearchParams(window.location.hash).entries());
+  const authParams = Object.fromEntries(new URLSearchParams(window.location.hash.replace(/^#/, '')).entries());
 
   if ('access_token' in authParams) {
     authService.setAccessToken(authParams['access_token']);
