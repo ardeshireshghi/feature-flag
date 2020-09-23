@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/ardeshireshghi/feature-flag/issues"
   },
-  "homepage": "https://github.com/ardeshireshghi/feature-flag#readme"
+  "homepage": "https://github.com/ardeshireshghi/feature-flag#readme",
+  "dependencies": {
+    "serverless-plugin-reducer": "^3.2.3"
+  }
 }

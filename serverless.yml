@@ -19,6 +19,7 @@ provider:
         - cognito-idp:ConfirmSignUp
         - cognito-idp:GetUser
         - cognito-idp:ListUsers
+        - s3:*
       Resource: "*"
 
 custom:
@@ -29,9 +30,14 @@ custom:
 plugins:
   - serverless-offline
 
+
 package:
+  individually: true
   exclude:
+    - ui/**
     - node_modules/**
+    - infrastructure/**
+
 
 functions:
   auth:
@@ -40,11 +46,13 @@ functions:
       COGNITO_USER_POOL_ID: eu-west-1_TijnuyGsL
       COGNITO_APP_CLIENT_ID: 4b8vhokqp1upoa5t4hlp9ourhk
     handler: auth/serverless/index.handler
+
     events:
       - http:
-          path: /id
+          path: /auth/{any+}
           method: POST
           cors: true
+          access: public
   api:
     environment:
       FEATURE_S3_BUCKET: feature-service-bucket
@@ -55,8 +63,20 @@ functions:
     handler: service/serverless/index.handler
     events:
       - http:
-          path: /{any+}
+          path: /api/{any+}
           method: ANY
-          cors: true
+          cors:
+            origin: '*' # <-- Specify allowed origin
+            headers: # <-- Specify allowed headers
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - x-client-type
+            allowCredentials: true
+          access: public
+
 
 
