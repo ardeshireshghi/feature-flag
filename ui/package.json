@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "aws-amplify": "^3.3.1",
     "evergreen-ui": "^5.0.6",
     "fsevents": "^1.2.9",
     "react": "^16.13.1",
@@ -14,7 +15,7 @@
     "react-scripts": "3.4.3"
   },
   "scripts": {
-    "start": "REACT_APP_FEATURE_FLAG_SERVICE_BASE_URL=http://localhost:8082 react-scripts start",
+    "start": "REACT_APP_FEATURE_FLAG_SERVICE_BASE_URL=http://localhost:8082 REACT_APP_COGNITO_CLIENT_ID=2n509urhek229vnc30a6ddvdup react-scripts start",
     "build": "./scripts/build.sh",
     "serve:build": "serve -s build",
     "test": "react-scripts test",
