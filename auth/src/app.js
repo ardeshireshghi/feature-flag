@@ -11,5 +11,5 @@ app.use(bodyParser.json());
 app.use('/', apiRouter);
 
 app.listen(PORT, () => {
-  console.log(`Live on port: ${PORT}!`);
+  console.log(`Auth service started on port: ${PORT}!`);
 });
