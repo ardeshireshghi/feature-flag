@@ -59,9 +59,11 @@ class FeatureService {
       this._cacheEnabled && (await this._setCache(productName, featuresData));
       return featuresData;
     } catch (err) {
-      const errorMessage = `Features for ${productName} cannot be found. productName can be invalid`;
+      const errorMessage = `Features for ${productName} cannot be found. productName might be invalid`;
       console.error(err);
-      throw new Error(errorMessage);
+      const newError = new Error(errorMessage);
+      newError.status = 404;
+      throw newError;
     }
   }
 
