@@ -7,8 +7,6 @@ exports.default = void 0;
 
 var _url = _interopRequireDefault(require("url"));
 
-var _config = _interopRequireDefault(require("./config"));
-
 var _app_factory = require("./app_factory");
 
 var _routes = require("./routes");
@@ -24,29 +22,21 @@ var _auth = require("./auth");
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const app = (0, _app_factory.createApp)();
-const {
-  apiRoutePattern
-} = _config.default;
 
 const shouldParseRequestBody = reqMethod => ['POST', 'PUT', 'DELETE'].includes(reqMethod);
 
 const featureFlagWebAppHandler = async (req, res) => {
   let statusCode;
+  let controller;
 
   try {
-    let routeName = 'default';
-    const uriSegmentMatch = req.pathname.match(apiRoutePattern);
-
-    if (uriSegmentMatch !== null) {
-      routeName = uriSegmentMatch[1];
-    }
-
-    if (!(routeName in _routes.routeToController)) {
+    try {
+      controller = (0, _routes.resolveRouteController)(req.pathname);
+    } catch (err) {
+      console.error('Error resolving the route:', err);
       statusCode = 404;
       throw new Error(`Can not handle URL ${req.url}`);
     }
-
-    const controller = _routes.routeToController[routeName];
 
     if (!(req.method.toLowerCase() in controller)) {
       statusCode = 405;

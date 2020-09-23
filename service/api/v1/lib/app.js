@@ -1,35 +1,28 @@
 import url from 'url';
-import config from './config';
 
 import { createApp } from './app_factory';
-import { routeToController } from './routes';
+import { resolveRouteController } from './routes';
 import { parseReqBody } from './parsers/request_bodyparser';
 import { parseUrl } from './parsers/url_parser';
 import { responseError, addCORSHeaders } from './http/response';
 import { authoriser } from './auth';
 
 const app = createApp();
-const { apiRoutePattern } = config;
 
 const shouldParseRequestBody = reqMethod => ['POST', 'PUT', 'DELETE'].includes(reqMethod);
 
 const featureFlagWebAppHandler = async (req, res) => {
   let statusCode;
+  let controller;
 
   try {
-    let routeName = 'default';
-    const uriSegmentMatch = req.pathname.match(apiRoutePattern);
-
-    if (uriSegmentMatch !== null) {
-      routeName = uriSegmentMatch[1];
-    }
-
-    if (!(routeName in routeToController)) {
+    try {
+      controller = resolveRouteController(req.pathname);
+    } catch(err) {
+      console.error('Error resolving the route:', err);
       statusCode = 404;
       throw new Error(`Can not handle URL ${req.url}`);
     }
-
-    const controller = routeToController[routeName];
 
     if (!(req.method.toLowerCase() in controller)) {
       statusCode = 405;
