@@ -50,7 +50,7 @@ export default class ProductService {
       ({ Key }) =>
         s3
           .getObject({
-            Bucket: 'feature-service-bucket',
+            Bucket: this._bucketName,
             Key
           })
           .promise()

@@ -61,7 +61,7 @@ class ProductService {
     }) => Key.includes('product.json')).map(({
       Key
     }) => s3.getObject({
-      Bucket: 'feature-service-bucket',
+      Bucket: this._bucketName,
       Key
     }).promise());
     const products = Promise.all(readProductObjectPromises).then(productsRaw => productsRaw.map(s3Response => JSON.parse(s3Response.Body.toString())));
