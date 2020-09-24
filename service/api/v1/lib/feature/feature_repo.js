@@ -26,7 +26,7 @@ const repository = {
       updatedAt: new Date().toISOString()
     });
 
-    featureService.save({
+    await featureService.save({
       productName,
       name,
       attributes: featureModel.valueOf()
@@ -52,7 +52,7 @@ const repository = {
     featureModel.setEnabled(enabled);
     featureModel.setUpdatedAt(new Date().toISOString());
 
-    featureService.save({
+    await featureService.save({
       productName,
       name,
       attributes: featureModel.valueOf()
@@ -73,7 +73,7 @@ const repository = {
       throw error;
     }
 
-    featureService.delete({ productName, name });
+    await featureService.delete({ productName, name });
     return true;
   },
 
