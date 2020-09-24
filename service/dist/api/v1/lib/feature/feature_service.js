@@ -76,10 +76,14 @@ class FeatureService {
       productName,
       useCache: false
     });
-    freshFeatureData = { ...freshFeatureData,
+    await this._persist(productName, { ...freshFeatureData,
       [name]: attributes
-    };
-    await this._persist(productName, freshFeatureData);
+    }); // Fetch the feature to make sure that it is persisted
+
+    await this.fetch({
+      productName,
+      useCache: false
+    });
     this._cacheEnabled && (await this._setCache(productName, freshFeatureData));
   }
 
