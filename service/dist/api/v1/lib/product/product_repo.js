@@ -44,7 +44,7 @@ const repository = {
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString()
         });
-        productService.create({
+        await productService.create({
           name,
           attributes: productModel.valueOf()
         });
@@ -58,7 +58,7 @@ const repository = {
   async deleteProduct({
     name
   }) {
-    productService.delete({
+    await productService.delete({
       name
     });
     return true;
