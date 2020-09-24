@@ -55,7 +55,7 @@ functions:
           access: public
   api:
     environment:
-      FEATURE_S3_BUCKET: feature-service-bucket
+      FEATURE_S3_BUCKET: ${opt:featureDatabucketName}
       FEATURE_CACHE_TTL_MINS: 1
       COGNITO_APP_POOL_ID: eu-west-1_TijnuyGsL
       COGNITO_USER_POOL_ID: eu-west-1_bxc84ueLv
@@ -77,6 +77,91 @@ functions:
               - x-client-type
             allowCredentials: true
           access: public
+resources:
+  Resources:
+    FeatureServiceUIS3Website:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: PublicRead
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: error.html
+        BucketName: ${opt:featureUIbucketName}
+    BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: "FeatureServiceUIS3Website"
+        PolicyDocument:
+          Statement:
+            -
+              Action:
+                - "s3:GetObject"
+              Effect: "Allow"
+              Resource:
+                Fn::Join:
+                  - ""
+                  -
+                    - "arn:aws:s3:::"
+                    -
+                      Ref: "FeatureServiceUIS3Website"
+                    - "/*"
+              Principal: "*"
+    FeatureServiceDataBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: Private
+        BucketName: ${opt:featureDatabucketName}
+    FeatureServiceUICloudFrontCDN:
+      Type: AWS::CloudFront::Distribution
+      DependsOn:
+      - FeatureServiceUIS3Website
+      Properties:
+        DistributionConfig:
+          Comment: Cloudfront Distribution pointing to S3 bucket
+          Origins:
+          - DomainName: !Select [2, !Split ["/", !GetAtt FeatureServiceUIS3Website.WebsiteURL]]
+            Id: S3Origin
+            CustomOriginConfig:
+              HTTPPort: '80'
+              HTTPSPort: '443'
+              OriginProtocolPolicy: http-only
+          Enabled: true
+          HttpVersion: 'http2'
+          DefaultRootObject: index.html
+          DefaultCacheBehavior:
+            AllowedMethods:
+            - GET
+            - HEAD
+            Compress: true
+            TargetOriginId: S3Origin
+            ForwardedValues:
+              QueryString: true
+              Cookies:
+                Forward: none
+            ViewerProtocolPolicy: redirect-to-https
+          CustomErrorResponses:
+            - ErrorCode: '404'
+              ResponsePagePath: "/index.html"
+              ResponseCode: '200'
+              ErrorCachingMinTTL: '300'
+          PriceClass: PriceClass_100
+          ViewerCertificate:
+            CloudFrontDefaultCertificate: true
+            MinimumProtocolVersion: TLSv1.2_2019
 
-
-
+  Outputs:
+    WebsiteURL:
+      Value: !GetAtt
+        - FeatureServiceUIS3Website
+        - WebsiteURL
+      Description: URL for features UI website hosted on S3
+    FeatureUIBucketName:
+      Value: !Ref 'FeatureServiceUIS3Website'
+      Description: Name of S3 bucket to hold website content
+    FeatureServiceDataBucketName:
+      Value: !Ref 'FeatureServiceDataBucket'
+      Description: Name of S3 bucket to hold feature service data
+    CloudfrontEndpoint:
+      Value: !GetAtt [FeatureServiceUICloudFrontCDN, DomainName]
+      Description: Endpoint for Cloudfront distribution
