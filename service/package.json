@@ -21,13 +21,14 @@
     "serverless-http": "^2.6.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.2",
-    "onchange": "^6.1.0",
-    "prettier": "1.19.1",
     "@babel/cli": "^7.8.3",
     "@babel/core": "^7.8.3",
+    "@babel/helper-compilation-targets": "^7.10.4",
     "@babel/node": "^7.8.3",
     "@babel/preset-env": "^7.8.3",
-    "aws-sdk": "^2.605.0"
+    "aws-sdk": "^2.605.0",
+    "nodemon": "^2.0.2",
+    "onchange": "^6.1.0",
+    "prettier": "1.19.1"
   }
 }
