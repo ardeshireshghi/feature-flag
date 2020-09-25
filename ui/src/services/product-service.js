@@ -5,10 +5,11 @@ const FEATURES_API_BASE_URL = process.env.REACT_APP_FEATURE_FLAG_SERVICE_BASE_UR
 const headers = () => {
   return {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${authService.getAccessToken()}`,
+    Authorization: `Bearer ${authService.getAccessToken()}`,
     'x-client-type': 'web'
-  }
+  };
 };
+
 const doCreateProduct = async ({ name, description }) => {
   return await fetch(`${FEATURES_API_BASE_URL}/api/v1/product`, {
     method: 'POST',
@@ -34,7 +35,7 @@ const doDeleteProduct = async ({ name }) => {
 };
 
 const doFetchProducts = async () => {
-  return await fetch(`${FEATURES_API_BASE_URL}/api/v1/products`, {
+  return await fetch(`${FEATURES_API_BASE_URL}/api/v1/products?timestamp=${Date.now()}`, {
     headers: headers()
   });
 };
