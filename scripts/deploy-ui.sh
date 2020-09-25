@@ -11,6 +11,7 @@ source ./scripts/shared.sh
     --cache-control max-age=31536000,public
 
   aws s3 cp "s3://$feature_ui_bucket_name/index.html" "s3://$feature_ui_bucket_name/index.html" \
+    --region "eu-west-1" \
     --metadata-directive REPLACE \
     --cache-control max-age=0,no-cache,no-store,must-revalidate \
     --content-type text/html \

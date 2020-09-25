@@ -4,7 +4,7 @@ export stage="${1-dev}"
 export feature_ui_bucket_name="$stage-feature-flag-service-ui"
 export cognito_client_id="2n509urhek229vnc30a6ddvdup"
 export user_pool_id="eu-west-1_bxc84ueLv"
-
+export AWS_PAGER=""
 
 if [[ "$stage" == "prod" ]]; then
   export feature_service_data_bucket_name="feature-service-bucket"
