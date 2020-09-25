@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/ardeshireshghi/feature-flag#readme",
   "dependencies": {
+    "serverless-api-gateway-caching": "^1.5.0",
     "serverless-plugin-reducer": "^3.2.3"
   }
 }
