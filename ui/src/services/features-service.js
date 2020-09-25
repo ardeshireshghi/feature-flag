@@ -6,6 +6,10 @@ const featureApiUrlForProductName = (productName, action) => {
   const url = new URL(`${FEATURES_API_BASE_URL}/api/v1/${action === 'fetch' ? 'features' : 'feature'}`);
   url.searchParams.append('productName', productName);
 
+  if (action === 'fetch') {
+    url.searchParams.append('timestamp', Date.now());
+  }
+
   return url;
 };
 
@@ -78,4 +82,4 @@ const withErrorHandling = (actionType, featureRequestFn) => {
 
 export const fetchFeatures = withErrorHandling('fetch', doFetchFeatures);
 export const createFeature = withErrorHandling('create', doCreateFeature);
-export const updateFeature = withErrorHandling('create', doUpdateFeature);
+export const updateFeature = withErrorHandling('update', doUpdateFeature);
