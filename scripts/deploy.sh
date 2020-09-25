@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eo pipefail
+
 usage() {
   echo "Usage: $(basename "$0") <stage-name>" && exit 1
 }
