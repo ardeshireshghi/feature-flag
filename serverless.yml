@@ -26,9 +26,12 @@ custom:
   prefix: ${self:provider.stage}-${self:service}
   serverless-offline:
     httpPort: 8080
+  apiGatewayCaching:
+    enabled: true
 
 plugins:
   - serverless-offline
+  - serverless-api-gateway-caching
 
 
 package:
@@ -65,6 +68,15 @@ functions:
       - http:
           path: /api/{any+}
           method: ANY
+          request:
+            parameters:
+              querystrings:
+                name: false
+                productName: false
+                timestamp: false
+              headers:
+                x-client-type: false
+
           cors:
             origin: '*' # <-- Specify allowed origin
             headers: # <-- Specify allowed headers
@@ -77,6 +89,12 @@ functions:
               - x-client-type
             allowCredentials: true
           access: public
+          caching:
+            enabled: true
+            cacheKeyParameters:
+              - name: request.queryString.productName
+              - name: request.querystring.timestamp
+              - name: request.querystring.name
 resources:
   Resources:
     FeatureServiceUIS3Website:
