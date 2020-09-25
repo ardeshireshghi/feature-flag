@@ -28,6 +28,7 @@ custom:
     httpPort: 8080
   apiGatewayCaching:
     enabled: true
+    ttlInSeconds: 0
 
 plugins:
   - serverless-offline
@@ -68,15 +69,6 @@ functions:
       - http:
           path: /api/{any+}
           method: ANY
-          request:
-            parameters:
-              querystrings:
-                name: false
-                productName: false
-                timestamp: false
-              headers:
-                x-client-type: false
-
           cors:
             origin: '*' # <-- Specify allowed origin
             headers: # <-- Specify allowed headers
@@ -91,8 +83,9 @@ functions:
           access: public
           caching:
             enabled: true
+            ttlInSeconds: 300
             cacheKeyParameters:
-              - name: request.queryString.productName
+              - name: request.querystring.productName
               - name: request.querystring.timestamp
               - name: request.querystring.name
 resources:
