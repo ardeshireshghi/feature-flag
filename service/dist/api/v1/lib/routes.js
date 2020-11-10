@@ -47,6 +47,7 @@ const resolveRouteController = pathname => {
     throw new Error(`Route name ${routeName} does not match any controllers`);
   }
 
+  console.log('Resolved route name', routeName);
   return routeToController[routeName];
 };
 

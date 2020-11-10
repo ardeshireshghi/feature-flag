@@ -62,6 +62,7 @@ const authoriser = async (req, res, next) => {
       accessToken: accessTokenFromClient,
       tokenValidator
     });
+    console.log('Validated token, request authorized');
     next();
   } catch (err) {
     console.log('Error validating access token', accessTokenFromClient, err);
