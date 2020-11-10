@@ -53,6 +53,7 @@ export const authoriser = async (req, res, next) => {
 
   try {
     await validateToken({ accessToken: accessTokenFromClient, tokenValidator });
+    console.log('Validated token, request authorized');
     next();
   } catch (err) {
     console.log('Error validating access token', accessTokenFromClient, err);
