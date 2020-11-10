@@ -1,6 +1,8 @@
-## API with Cognito
+## Auth API service (uses AWS Cognito)
 
-This is a prototype of an API in Node JS to test how integration with Cognito works for Authentication of users.
+This micro-service handles Authentication for "FeatureToggler" clients.
+
+It currently covers apps and services client apps that need to fetch features from the main service and need JWT access token.
 
 ### Installation
 
@@ -22,23 +24,29 @@ After starting the app (`npm start`), run:
 ```
 $ curl -XPOST -H "Content-type: application/json" \
   --data '{"username": "monzo2", "password": "xxxxxxxxxxxxxx"}' \
-  localhost:8080/api/auth/token
+  localhost:8080/auth/token
 ```
 
 #### Test renew token using Refresh token
 ```
-$ curl -XPOST -H "Content-type: application/json" --data '{"username": "monzo2", "refreshToken": "refresh-token-value-from-client"}' localhost:8080/api/auth/token/renew
+$ curl -XPOST -H "Content-type: application/json" --data '{"username": "monzo2", "refreshToken": "refresh-token-value-from-client"}' localhost:8080/auth/token
 ```
 
-#### Test protected API
-```
-$ curl -XPOST -H "Content-type: application/json" -H "Authorization: Bearer access-token-from-token-endpoint" localhost:8080/api/quote
-```
-### Create Cognito user
 
-The above tests assume that the user is created in Cognito user pool. To create user there is a helper script `./scripts/create-user.sh`:
+### Create Cognito web user
+
+The above tests assume that the user is created in Cognito user pool. To create user there is a helper script `./scripts/create-feature-service-user.sh`:
 
 ```bash
-$ ./scripts/create-user.sh
-Usage: create-user.sh <username> <email> <phone>
+$ ./scripts/create-feature-service-user.sh
+Usage: create-feature-service-user.sh <username> <email> <phone>
+```
+
+### Create Cognito client app user
+
+The above tests assume that the user is created in Cognito user pool. To create user there is a helper script `./scripts/create-feature-service-client-app.sh`:
+
+```bash
+$ ./scripts/create-feature-service-client-app.sh
+Usage: create-feature-service-client-app.sh <username> <email> <phone>
 ```
