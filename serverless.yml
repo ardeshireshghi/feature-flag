@@ -47,8 +47,8 @@ functions:
   auth:
     environment:
       NODE_ENV: production
-      COGNITO_USER_POOL_ID: eu-west-1_TijnuyGsL
-      COGNITO_APP_CLIENT_ID: 4b8vhokqp1upoa5t4hlp9ourhk
+      COGNITO_USER_POOL_ID: ${opt:appPoolId, 'eu-west-1_TijnuyGsL'}
+      COGNITO_APP_CLIENT_ID: ${opt:appPoolClientId, '4b8vhokqp1upoa5t4hlp9ourhk'}
     handler: auth/serverless/index.handler
 
     events:
@@ -61,7 +61,7 @@ functions:
     environment:
       FEATURE_S3_BUCKET: ${opt:featureDatabucketName, '${self:provider.stage}-feature-service-bucket'}
       FEATURE_CACHE_TTL_MINS: 1
-      COGNITO_APP_POOL_ID: eu-west-1_TijnuyGsL
+      COGNITO_APP_POOL_ID: ${opt:appPoolId, 'eu-west-1_TijnuyGsL'}
       COGNITO_USER_POOL_ID: eu-west-1_bxc84ueLv
 
     handler: service/serverless/index.handler
