@@ -26,7 +26,7 @@ module.exports.createToken = async (req, res) => {
     }
 
     res.json(idResponse);
-  } catch(err) {
+  } catch (err) {
     res.status(403).json(responseFromError(err));
   }
 };

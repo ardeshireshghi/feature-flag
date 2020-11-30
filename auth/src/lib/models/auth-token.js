@@ -3,7 +3,7 @@ function tokenExpiresInSeconds(accessToken) {
 }
 
 class AuthToken {
-  constructor({accessToken, refreshToken, expiresIn, tokenType }) {
+  constructor({ accessToken, refreshToken, expiresIn, tokenType }) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
     this.expiresIn = expiresIn;

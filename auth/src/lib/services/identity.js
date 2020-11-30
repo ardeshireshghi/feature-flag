@@ -9,13 +9,13 @@ global.fetch = require('node-fetch');
 const { CognitoUserPool } = AmazonCognitoIdentity;
 
 const poolData = {
-  UserPoolId : process.env.COGNITO_USER_POOL_ID,
-  ClientId : process.env.COGNITO_APP_CLIENT_ID
+  UserPoolId: process.env.COGNITO_USER_POOL_ID,
+  ClientId: process.env.COGNITO_APP_CLIENT_ID
 };
 
 const userPool = new CognitoUserPool(poolData);
 
-function cognitoUser({clientId, userPool}) {
+function cognitoUser({ clientId, userPool }) {
   const userData = {
     Username: clientId,
     Pool: userPool
@@ -25,11 +25,13 @@ function cognitoUser({clientId, userPool}) {
 }
 
 const identityService = {
-  async authenticate({clientId, clientSecret}) {
-    const authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails({
-      Username: clientId,
-      Password: clientSecret
-    });
+  async authenticate({ clientId, clientSecret }) {
+    const authenticationDetails = new AmazonCognitoIdentity.AuthenticationDetails(
+      {
+        Username: clientId,
+        Password: clientSecret
+      }
+    );
 
     const user = cognitoUser({ clientId, userPool });
 
@@ -42,7 +44,9 @@ const identityService = {
           reject(err);
         },
         newPasswordRequired() {
-          const err = new Error('New secret is required to replace temporary password');
+          const err = new Error(
+            'New secret is required to replace temporary password'
+          );
           err.code = 'NewPasswordRequiredError';
           reject(err);
         }
@@ -54,7 +58,7 @@ const identityService = {
       RefreshToken: refreshToken
     });
 
-    const user = cognitoUser({clientId, userPool});
+    const user = cognitoUser({ clientId, userPool });
 
     return new Promise((resolve, reject) => {
       user.refreshSession(RefreshToken, (err, session) => {
