@@ -13,7 +13,18 @@ else
 fi
 
 serverless_info() {
-  sls info --verbose --stage "$stage" --featureUIbucketName "$feature_ui_bucket_name"
+  set +e
+  local info
+  info=$(sls info --verbose --stage "$stage" --featureUIbucketName "$feature_ui_bucket_name")
+
+  set +x
+  if [[ "$?" -ne 0 ]]; then
+    echo "$info" | grep -A4 "Serverless Error"
+    exit 1
+  fi
+  set -ex
+
+  echo "$info"
 }
 
 service_endpoint() {
