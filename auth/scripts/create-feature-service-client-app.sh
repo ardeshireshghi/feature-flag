@@ -1,14 +1,20 @@
 #!/usr/bin/env bash
 
-set -eo pipefail
+set -exo pipefail
 
 usage() {
   echo "Usage: $(basename "$0")"
+  echo "Dependencies: jq, awscli"
   exit 1
 }
 
-user_pool_id="eu-west-1_TijnuyGsL"
-app_client_id="4b8vhokqp1upoa5t4hlp9ourhk"
+command -v jq || usage
+command -v aws || usage
+
+[[ -f ".env" ]] && source .env
+
+user_pool_id="${COGNITO_USER_POOL_ID:-eu-west-1_TijnuyGsL}"
+app_client_id="${COGNITO_APP_CLIENT_ID:-4b8vhokqp1upoa5t4hlp9ourhk}"
 
 client_id="$(openssl rand -hex 8)"
 password_hex="$(openssl rand -hex 16)"
