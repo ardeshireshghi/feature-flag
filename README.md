@@ -21,8 +21,22 @@ Make sure S3 buckets are configured correctly in the Serverless config file (`se
 $ sls offline
 ```
 
+Alternatively you can run each of the processes separately:
+
+```
+$ cd service && npm run watch
+```
+
+```
+$ cd auth && npm run dev
+```
+
 ## Run UI
 
 ```bash
 $ cd ui && npm start
 ```
+
+## CI/CD and Deployment
+
+The build and deploy happens in CircleCI upon pushing to master. Each commit will be automatically deployed to `dev` stage using `serverless` when the test and build passes. The AWS credentials for the deploy IAM role are set in CircleCI config.
