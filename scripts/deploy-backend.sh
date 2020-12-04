@@ -20,4 +20,6 @@ aws cognito-idp update-user-pool-client \
   --allowed-o-auth-scopes '["https://feature-flag-service.sh/features.read"]' \
   --supported-identity-providers '["COGNITO"]' \
   --allowed-o-auth-flows '["implicit"]' \
-  --allowed-o-auth-flows-user-pool-client
+  --allowed-o-auth-flows-user-pool-client \
+  --explicit-auth-flows '["ALLOW_ADMIN_USER_PASSWORD_AUTH", "ALLOW_USER_PASSWORD_AUTH", "ALLOW_REFRESH_TOKEN_AUTH", "ALLOW_CUSTOM_AUTH", "ALLOW_USER_SRP_AUTH"]'
+
