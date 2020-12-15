@@ -83,7 +83,7 @@ functions:
           access: public
           caching:
             enabled: true
-            ttlInSeconds: 300
+            ttlInSeconds: 60
             cacheKeyParameters:
               - name: request.querystring.productName
               - name: request.querystring.timestamp
